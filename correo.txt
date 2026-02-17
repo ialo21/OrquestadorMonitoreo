@@ -1,0 +1,24 @@
+Según la reunión de hoy te adjunto las querys y los datos de las bases de datos en donde se ejecutan las querys
+
+Alloy
+
+IP: 10.49.40.16
+Puerto: 5432
+DB: DBIOP
+
+Querys:
+Reporte Históricos Tarjetas
+Reporte Libro Recibo Caja Solo PT360
+Reporte libro Recibo Caja  Sin PT360
+Reporte FTP
+Reporte Facturas No Pago
+
+
+SQL Server
+
+IP: 126.26.3.20
+Puerto: 1433
+DB: Interseg
+
+Querys:
+Reporte Resumen Registro Ventas

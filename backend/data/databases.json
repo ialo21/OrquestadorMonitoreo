@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Alloy - DBIOP - UAT",
+    "db_type": "postgresql",
+    "host": "10.49.40.10",
+    "port": 5432,
+    "database": "dbiopinc",
+    "description": "Base de datos PostgreSQL UAT (Alloy)",
+    "id": "alloy-dbiop",
+    "auth_type": "sql"
+  },
+  {
+    "name": "SQL Server - Interseg",
+    "db_type": "sqlserver",
+    "host": "126.26.3.20",
+    "port": 1433,
+    "database": "Interseg",
+    "description": "Base de datos SQL Server (Interseg)",
+    "id": "sqlserver-interseg",
+    "auth_type": "windows"
+  }
+]

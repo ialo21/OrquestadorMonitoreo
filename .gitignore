@@ -1,0 +1,25 @@
+# Dependencias
+node_modules
+**/node_modules
+
+# Resultados y datos generados
+backend/data/results/
+*.xlsx
+*.csv
+
+# Entorno y secretos
+.env
+.env.local
+.env.*.local
+
+# Logs y caché
+*.log
+.cache/
+__pycache__/
+**/__pycache__/
+
+# IDE / OS
+.idea/
+.vscode/
+Thumbs.db
+.DS_Store
