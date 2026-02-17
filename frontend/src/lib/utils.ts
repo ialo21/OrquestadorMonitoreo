@@ -17,6 +17,19 @@ export function formatDate(isoString: string): string {
   }
 }
 
+/** Hora en formato hh:mm.ss (solo hora, minuto y segundo). */
+export function formatDateWithSeconds(isoString: string): string {
+  try {
+    const date = new Date(isoString)
+    const h = date.getHours().toString().padStart(2, '0')
+    const m = date.getMinutes().toString().padStart(2, '0')
+    const s = date.getSeconds().toString().padStart(2, '0')
+    return `${h}:${m}.${s}`
+  } catch {
+    return isoString
+  }
+}
+
 export function formatDuration(seconds: number): string {
   if (seconds < 1) return '< 1s'
   if (seconds < 60) return `${Math.floor(seconds)}s`

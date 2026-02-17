@@ -24,7 +24,7 @@ import {
   cancelExecution,
   cancelQueryInExecution,
 } from '@/services/api'
-import { cn, formatDate, formatDuration, getStatusConfig } from '@/lib/utils'
+import { cn, formatDate, formatDateWithSeconds, formatDuration, getStatusConfig } from '@/lib/utils'
 
 interface ExecutionPanelProps {
   activeExecutionId?: string | null
@@ -254,7 +254,7 @@ export default function ExecutionPanel({ activeExecutionId, onClear }: Execution
                           <span className="mx-1.5">•</span>
                         </span>
                       )}
-                      <span>Inicio: {formatDate(exec.started_at)}</span>
+                      <span>Inicio: {formatDateWithSeconds(exec.started_at)}</span>
                       {(exec.status === 'running' || exec.status === 'pending') && (
                         <>
                           <span className="mx-1.5">•</span>
@@ -266,7 +266,7 @@ export default function ExecutionPanel({ activeExecutionId, onClear }: Execution
                       {exec.completed_at && (
                         <>
                           <span className="mx-1.5">•</span>
-                          <span>Fin: {formatDate(exec.completed_at)}</span>
+                          <span>Fin: {formatDateWithSeconds(exec.completed_at)}</span>
                           <span className="mx-1.5">•</span>
                           <span>
                             Duración:{' '}
