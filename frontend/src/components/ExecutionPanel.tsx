@@ -35,7 +35,16 @@ export default function ExecutionPanel({ activeExecutionId, onClear }: Execution
   const [executions, setExecutions] = useState<Execution[]>([])
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(true)
+  const [now, setNow] = useState(() => Date.now())
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  // Actualizar cada segundo el "ahora" para mostrar tiempo transcurrido en ejecuciones en curso
+  const hasRunning = executions.some((e) => e.status === 'running' || e.status === 'pending')
+  useEffect(() => {
+    if (!hasRunning) return
+    const tick = setInterval(() => setNow(Date.now()), 1000)
+    return () => clearInterval(tick)
+  }, [hasRunning])
 
   const loadExecutions = async () => {
     try {
@@ -246,6 +255,14 @@ export default function ExecutionPanel({ activeExecutionId, onClear }: Execution
                         </span>
                       )}
                       <span>Inicio: {formatDate(exec.started_at)}</span>
+                      {(exec.status === 'running' || exec.status === 'pending') && (
+                        <>
+                          <span className="mx-1.5">•</span>
+                          <span className="text-primary-600 font-medium">
+                            Transcurrido: {formatDuration((now - new Date(exec.started_at).getTime()) / 1000)}
+                          </span>
+                        </>
+                      )}
                       {exec.completed_at && (
                         <>
                           <span className="mx-1.5">•</span>

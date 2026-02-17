@@ -114,7 +114,11 @@ def _parse_multi_sheet_sql(sql_content: str) -> list[tuple[str, str]]:
     sheets = []
     for i, match in enumerate(matches):
         sheet_name = match.group(1).strip()
-        start_pos = match.end()
+        # La primera hoja debe incluir todo lo anterior (p. ej. WITH / CTEs) para que la query sea válida
+        if i == 0:
+            start_pos = 0
+        else:
+            start_pos = match.end()
         
         # Encontrar el final de esta query (inicio de la siguiente SHEET o fin del archivo)
         if i + 1 < len(matches):
@@ -129,10 +133,15 @@ def _parse_multi_sheet_sql(sql_content: str) -> list[tuple[str, str]]:
     return sheets if sheets else [("Hoja1", sql_content.strip())]
 
 
+# Abreviaturas de mes para el nombre del archivo (cierre)
+_MES_ABREV = ("Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic")
+
+
 def save_dataframe_to_excel(
     df: pd.DataFrame | list[tuple[str, pd.DataFrame]],
     execution_id: str,
     query_name: str,
+    period: PeriodInput | None = None,
 ) -> str:
     """
     Guarda uno o más DataFrames como archivo Excel y retorna el nombre del archivo.
@@ -141,12 +150,17 @@ def save_dataframe_to_excel(
         df: Un DataFrame único o una lista de tuplas (nombre_hoja, DataFrame)
         execution_id: ID de la ejecución
         query_name: Nombre de la query
+        period: Si se indica, el archivo se nombra como "Query_MesAño.xlsx"; si no, se usa timestamp
     """
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
     safe_name = _sanitize_filename(query_name)
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"{safe_name}_{timestamp}.xlsx"
+    if period is not None:
+        mes_abrev = _MES_ABREV[period.month - 1]
+        suffix = f"{mes_abrev}{period.year}"
+    else:
+        suffix = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"{safe_name}_{suffix}.xlsx"
     filepath = RESULTS_DIR / execution_id / filename
 
     filepath.parent.mkdir(parents=True, exist_ok=True)
@@ -419,7 +433,7 @@ def run_execution(
                     _finish_query(idx, "cancelled", duration_seconds=round(duration, 2))
                     return
 
-                filename = save_dataframe_to_excel(df, execution_id, query.name)
+                filename = save_dataframe_to_excel(df, execution_id, query.name, period=period)
                 total_rows = len(df)
             else:
                 # Query con múltiples hojas
@@ -441,7 +455,7 @@ def run_execution(
                     _finish_query(idx, "cancelled", duration_seconds=round(duration, 2))
                     return
 
-                filename = save_dataframe_to_excel(sheets_data, execution_id, query.name)
+                filename = save_dataframe_to_excel(sheets_data, execution_id, query.name, period=period)
 
             _finish_query(
                 idx, "success",

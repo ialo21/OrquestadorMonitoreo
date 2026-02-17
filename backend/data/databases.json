@@ -17,6 +17,7 @@
     "database": "Interseg",
     "description": "Base de datos SQL Server (Interseg)",
     "id": "sqlserver-interseg",
-    "auth_type": "windows"
+    "auth_type": "windows",
+    "environment": "prod"
   }
 ]

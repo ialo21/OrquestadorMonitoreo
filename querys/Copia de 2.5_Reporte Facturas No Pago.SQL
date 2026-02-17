@@ -39,7 +39,7 @@ select distinct dm.id_detalle_movimiento, c.id_comprobante, dm.monto_movi_cantid
           group by q.id_comprobante
 
 )
--- SHEET: Resumen
+-- SHEET: width
 select distinct   c.id_comprobante
   , c.serie_comprobante || '-' || c.num_comprobante documento
   , c.num_poliza
@@ -68,7 +68,7 @@ from samp.detalle_movimiento dm
 and c.asiento is not null
   order by c.id_comprobante asc;
 
--- SHEET: Detalle
+-- SHEET: detalle
 select    c.id_comprobante
                 , cc.numero_poliza
                 , cc.numero_certificado

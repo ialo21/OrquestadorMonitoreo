@@ -39,6 +39,7 @@ select distinct dm.id_detalle_movimiento, c.id_comprobante, dm.monto_movi_cantid
           group by q.id_comprobante
 
 )
+-- SHEET: width
 select distinct   c.id_comprobante
   , c.serie_comprobante || '-' || c.num_comprobante documento
   , c.num_poliza
@@ -66,7 +67,8 @@ from samp.detalle_movimiento dm
   and p.fecha_creacion < to_date('{{FECHA_FIN}}','dd/mm/yyyy')
 and c.asiento is not null
   order by c.id_comprobante asc;
-          
+
+-- SHEET: detalle
 select    c.id_comprobante
                 , cc.numero_poliza
                 , cc.numero_certificado

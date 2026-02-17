@@ -19,9 +19,9 @@ export function formatDate(isoString: string): string {
 
 export function formatDuration(seconds: number): string {
   if (seconds < 1) return '< 1s'
-  if (seconds < 60) return `${Math.round(seconds)}s`
+  if (seconds < 60) return `${Math.floor(seconds)}s`
   const mins = Math.floor(seconds / 60)
-  const secs = Math.round(seconds % 60)
+  const secs = Math.floor(seconds % 60)
   return `${mins}m ${secs}s`
 }
 

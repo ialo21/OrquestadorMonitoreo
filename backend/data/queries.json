@@ -44,17 +44,6 @@
     "updated_at": "2026-02-16T12:29:35.773191"
   },
   {
-    "name": "Reporte Facturas No Pago",
-    "description": "Importada desde Copia de 2.5_Reporte Facturas No Pago.SQL",
-    "database_id": "alloy-dbiop",
-    "parameters": [],
-    "id": "9e497eac-8b45-4461-a9b9-273e3c623502",
-    "filename": "9e497eac-8b45-4461-a9b9-273e3c623502.sql",
-    "original_filename": "Copia de 2.5_Reporte Facturas No Pago.SQL",
-    "created_at": "2026-02-16T12:29:35.773724",
-    "updated_at": "2026-02-16T12:29:35.773724"
-  },
-  {
     "name": "Reporte Resumen Registro Ventas",
     "description": "Importada desde Copia de 2.7_Reporte Resumen Registro Ventas.SQL",
     "database_id": "sqlserver-interseg",
@@ -66,14 +55,14 @@
     "updated_at": "2026-02-16T12:29:35.774461"
   },
   {
-    "name": "Reporte Históricos Tarjetas",
-    "description": "Importada desde ORIGINAL 2.2_Reporte Históricos Tarjetas.SQL",
+    "name": "Reporte Facturas No Pago",
+    "description": "Importada desde Copia de 2.5_Reporte Facturas No Pago.SQL",
     "database_id": "alloy-dbiop",
     "parameters": [],
-    "id": "c4dbc8d8-7804-4f95-ba2a-f51bd0146389",
-    "filename": "c4dbc8d8-7804-4f95-ba2a-f51bd0146389.sql",
-    "original_filename": "ORIGINAL 2.2_Reporte Históricos Tarjetas.SQL",
-    "created_at": "2026-02-17T11:17:36.814218",
-    "updated_at": "2026-02-17T11:19:49.914602"
+    "id": "eaff35d8-10c2-46ac-95bb-a3b58308a33d",
+    "filename": "eaff35d8-10c2-46ac-95bb-a3b58308a33d.sql",
+    "original_filename": "Copia de 2.5_Reporte Facturas No Pago.SQL",
+    "created_at": "2026-02-17T15:15:20.816256",
+    "updated_at": "2026-02-17T15:15:20.816256"
   }
 ]
