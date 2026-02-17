@@ -204,9 +204,15 @@ export default function ExecutionPanel({ activeExecutionId, onClear }: Execution
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-medium text-gray-900">
-                        {exec.total_queries} {exec.total_queries === 1 ? 'query' : 'queries'}
-                      </span>
+                      {exec.period ? (
+                        <span className="text-lg font-semibold text-gray-900">
+                          Cierre: {['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][exec.period.month - 1]} {exec.period.year}
+                        </span>
+                      ) : (
+                        <span className="text-lg font-semibold text-gray-900">
+                          {exec.total_queries} {exec.total_queries === 1 ? 'query' : 'queries'}
+                        </span>
+                      )}
                       <span
                         className={cn(
                           'text-xs font-medium px-2 py-0.5 rounded-full',
@@ -233,24 +239,33 @@ export default function ExecutionPanel({ activeExecutionId, onClear }: Execution
                       )}
                     </div>
                     <p className="text-xs text-gray-500 mt-0.5">
-                      {formatDate(exec.started_at)}
                       {exec.period && (
-                        <span className="ml-2 text-gray-600">
-                          Cierre: {['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][exec.period.month - 1]} {exec.period.year}
+                        <span className="text-gray-600">
+                          {exec.total_queries} {exec.total_queries === 1 ? 'query' : 'queries'}
+                          <span className="mx-1.5">•</span>
                         </span>
+                      )}
+                      <span>Inicio: {formatDate(exec.started_at)}</span>
+                      {exec.completed_at && (
+                        <>
+                          <span className="mx-1.5">•</span>
+                          <span>Fin: {formatDate(exec.completed_at)}</span>
+                          <span className="mx-1.5">•</span>
+                          <span>
+                            Duración:{' '}
+                            {formatDuration(
+                              (new Date(exec.completed_at).getTime() -
+                                new Date(exec.started_at).getTime()) /
+                                1000
+                            )}
+                          </span>
+                        </>
                       )}
                       {exec.use_dynamic_dates === false && (
-                        <span className="ml-2 text-gray-500">Sin fechas dinámicas</span>
-                      )}
-                      {exec.completed_at && (
-                        <span className="ml-2">
-                          Duración total:{' '}
-                          {formatDuration(
-                            (new Date(exec.completed_at).getTime() -
-                              new Date(exec.started_at).getTime()) /
-                              1000
-                          )}
-                        </span>
+                        <>
+                          <span className="mx-1.5">•</span>
+                          <span className="text-gray-500">Sin fechas dinámicas</span>
+                        </>
                       )}
                     </p>
                   </div>
@@ -392,9 +407,19 @@ function ResultRow({
       {getStatusIcon()}
 
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <span className="text-sm font-medium text-gray-900">{result.query_name}</span>
           <span className="text-xs text-gray-400">{result.database_name}</span>
+          <span
+            className={cn(
+              'text-xs font-medium px-1.5 py-0.5 rounded-full',
+              result.database_environment === 'prod'
+                ? 'bg-green-100 text-green-700'
+                : 'bg-yellow-100 text-yellow-700'
+            )}
+          >
+            {result.database_environment === 'prod' ? 'PROD' : 'UAT'}
+          </span>
         </div>
 
         {result.status === 'success' && (

@@ -437,6 +437,7 @@ def create_execution(req: ExecutionRequest):
                 query_id=q["id"],
                 query_name=q["name"],
                 database_name=db_map[q["database_id"]].name if q["database_id"] in db_map else "Desconocida",
+                database_environment=db_map[q["database_id"]].environment if q["database_id"] in db_map else "prod",
                 status="pending",
             )
             for q in selected_queries

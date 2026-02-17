@@ -9,6 +9,7 @@ export interface DatabaseConfig {
   database: string
   description: string
   auth_type: 'sql' | 'windows'
+  environment: 'prod' | 'uat'
 }
 
 export type DatabaseConfigCreate = Omit<DatabaseConfig, 'id'>
@@ -56,6 +57,7 @@ export interface QueryResult {
   query_id: string
   query_name: string
   database_name: string
+  database_environment: 'prod' | 'uat'
   status: 'pending' | 'running' | 'success' | 'error' | 'interrupted' | 'cancelled'
   row_count: number
   filename: string

@@ -32,6 +32,7 @@ const emptyDb: DatabaseConfigCreate = {
   database: '',
   description: '',
   auth_type: 'sql',
+  environment: 'prod',
 }
 
 export default function DatabasePanel({ databases, onRefresh }: DatabasePanelProps) {
@@ -62,6 +63,7 @@ export default function DatabasePanel({ databases, onRefresh }: DatabasePanelPro
       database: db.database,
       description: db.description,
       auth_type: db.auth_type || 'sql',
+      environment: db.environment || 'prod',
     })
     setEditingId(db.id)
     setShowForm(true)
@@ -152,14 +154,26 @@ export default function DatabasePanel({ databases, onRefresh }: DatabasePanelPro
                     <Server className="w-5 h-5 text-gray-400" />
                     <h3 className="font-semibold text-gray-900">{db.name}</h3>
                   </div>
-                  <span
-                    className={cn(
-                      'text-xs font-medium px-2 py-0.5 rounded-full',
-                      badge.className
-                    )}
-                  >
-                    {badge.label}
-                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <span
+                      className={cn(
+                        'text-xs font-medium px-2 py-0.5 rounded-full',
+                        badge.className
+                      )}
+                    >
+                      {badge.label}
+                    </span>
+                    <span
+                      className={cn(
+                        'text-xs font-medium px-2 py-0.5 rounded-full',
+                        db.environment === 'prod'
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-yellow-100 text-yellow-700'
+                      )}
+                    >
+                      {db.environment === 'prod' ? 'PROD' : 'UAT'}
+                    </span>
+                  </div>
                 </div>
 
                 <div className="space-y-1 text-sm text-gray-600 mb-4">
@@ -246,7 +260,7 @@ export default function DatabasePanel({ databases, onRefresh }: DatabasePanelPro
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
                   <select
@@ -262,6 +276,22 @@ export default function DatabasePanel({ databases, onRefresh }: DatabasePanelPro
                   >
                     <option value="postgresql">PostgreSQL</option>
                     <option value="sqlserver">SQL Server</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Ambiente</label>
+                  <select
+                    value={form.environment}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        environment: e.target.value as 'prod' | 'uat',
+                      })
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm"
+                  >
+                    <option value="prod">Producción</option>
+                    <option value="uat">Pruebas (UAT)</option>
                   </select>
                 </div>
                 <div>

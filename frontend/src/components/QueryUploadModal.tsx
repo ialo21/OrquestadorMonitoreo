@@ -168,7 +168,7 @@ export default function QueryUploadModal({
               <option value="">Seleccionar base de datos...</option>
               {databases.map((db) => (
                 <option key={db.id} value={db.id}>
-                  {db.name} ({db.db_type === 'postgresql' ? 'PostgreSQL' : 'SQL Server'})
+                  {db.name} ({db.db_type === 'postgresql' ? 'PostgreSQL' : 'SQL Server'}) - {db.environment === 'prod' ? 'PROD' : 'UAT'}
                 </option>
               ))}
             </select>

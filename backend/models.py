@@ -20,6 +20,7 @@ class DatabaseConfigBase(BaseModel):
     database: str
     description: str = ""
     auth_type: Literal["sql", "windows"] = "sql"  # Tipo de autenticación
+    environment: Literal["prod", "uat"] = "prod"  # Ambiente: producción o pruebas
 
 
 class DatabaseConfigCreate(DatabaseConfigBase):
@@ -86,6 +87,7 @@ class QueryResult(BaseModel):
     query_id: str
     query_name: str
     database_name: str
+    database_environment: Literal["prod", "uat"] = "prod"
     status: Literal["pending", "running", "success", "error", "cancelled"] = "pending"
     row_count: int = 0
     filename: str = ""

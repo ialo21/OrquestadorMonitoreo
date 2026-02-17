@@ -263,6 +263,7 @@ def run_execution(
                 query_id=q.id,
                 query_name=q.name,
                 database_name=db.name if db else "Desconocida",
+                database_environment=db.environment if db else "prod",
                 status="pending",
             ).model_dump()
         )

@@ -263,14 +263,26 @@ export default function QueryPanel({
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-semibold text-gray-900">{query.name}</h3>
                       {badge && db && (
-                        <span
-                          className={cn(
-                            'text-xs font-medium px-2 py-0.5 rounded-full',
-                            badge.className
-                          )}
-                        >
-                          {db.name}
-                        </span>
+                        <>
+                          <span
+                            className={cn(
+                              'text-xs font-medium px-2 py-0.5 rounded-full',
+                              badge.className
+                            )}
+                          >
+                            {db.name}
+                          </span>
+                          <span
+                            className={cn(
+                              'text-xs font-medium px-2 py-0.5 rounded-full',
+                              db.environment === 'prod'
+                                ? 'bg-green-100 text-green-700'
+                                : 'bg-yellow-100 text-yellow-700'
+                            )}
+                          >
+                            {db.environment === 'prod' ? 'PROD' : 'UAT'}
+                          </span>
+                        </>
                       )}
                     </div>
                     {query.description && (
