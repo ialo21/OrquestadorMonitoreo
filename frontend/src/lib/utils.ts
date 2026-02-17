@@ -69,3 +69,15 @@ export function getStatusConfig(status: string): {
       return { label: status, className: 'text-gray-600', bgClass: 'bg-gray-100' }
   }
 }
+
+export function detectMultiSheetQuery(sqlContent: string): { isMultiSheet: boolean; sheetCount: number; sheetNames: string[] } {
+  const sheetPattern = /--\s*SHEET:\s*(.+?)(?:\r?\n)/gi
+  const matches = [...sqlContent.matchAll(sheetPattern)]
+  
+  if (matches.length === 0) {
+    return { isMultiSheet: false, sheetCount: 1, sheetNames: ['Hoja1'] }
+  }
+  
+  const sheetNames = matches.map(m => m[1].trim())
+  return { isMultiSheet: true, sheetCount: sheetNames.length, sheetNames }
+}

@@ -90,12 +90,58 @@ def _sanitize_filename(name: str) -> str:
     return name.strip()
 
 
+def _parse_multi_sheet_sql(sql_content: str) -> list[tuple[str, str]]:
+    """
+    Parsea un SQL que puede contener múltiples queries con nombres de hojas.
+    
+    Busca comentarios con formato:
+    -- SHEET: nombre_hoja
+    SELECT ...
+    
+    Retorna lista de tuplas (nombre_hoja, sql_query).
+    Si no hay comentarios SHEET, retorna una sola query con nombre "Hoja1".
+    """
+    import re
+    
+    # Buscar todos los comentarios -- SHEET: nombre
+    sheet_pattern = re.compile(r'--\s*SHEET:\s*(.+?)(?:\r?\n)', re.IGNORECASE)
+    matches = list(sheet_pattern.finditer(sql_content))
+    
+    if not matches:
+        # No hay comentarios SHEET, retornar todo el SQL como una sola hoja
+        return [("Hoja1", sql_content.strip())]
+    
+    sheets = []
+    for i, match in enumerate(matches):
+        sheet_name = match.group(1).strip()
+        start_pos = match.end()
+        
+        # Encontrar el final de esta query (inicio de la siguiente SHEET o fin del archivo)
+        if i + 1 < len(matches):
+            end_pos = matches[i + 1].start()
+        else:
+            end_pos = len(sql_content)
+        
+        query_sql = sql_content[start_pos:end_pos].strip()
+        if query_sql:
+            sheets.append((sheet_name, query_sql))
+    
+    return sheets if sheets else [("Hoja1", sql_content.strip())]
+
+
 def save_dataframe_to_excel(
-    df: pd.DataFrame,
+    df: pd.DataFrame | list[tuple[str, pd.DataFrame]],
     execution_id: str,
     query_name: str,
 ) -> str:
-    """Guarda un DataFrame como archivo Excel y retorna el nombre del archivo."""
+    """
+    Guarda uno o más DataFrames como archivo Excel y retorna el nombre del archivo.
+    
+    Args:
+        df: Un DataFrame único o una lista de tuplas (nombre_hoja, DataFrame)
+        execution_id: ID de la ejecución
+        query_name: Nombre de la query
+    """
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
     safe_name = _sanitize_filename(query_name)
@@ -105,19 +151,26 @@ def save_dataframe_to_excel(
 
     filepath.parent.mkdir(parents=True, exist_ok=True)
 
-    with pd.ExcelWriter(filepath, engine="openpyxl") as writer:
-        df.to_excel(writer, index=False, sheet_name=safe_name[:31])
+    # Determinar si es un DataFrame único o múltiples hojas
+    if isinstance(df, pd.DataFrame):
+        sheets_data = [(safe_name[:31], df)]
+    else:
+        sheets_data = [(name[:31], dataframe) for name, dataframe in df]
 
-        worksheet = writer.sheets[safe_name[:31]]
-        for col_idx, column in enumerate(df.columns, 1):
-            max_length = max(
-                df[column].astype(str).map(len).max() if len(df) > 0 else 0,
-                len(str(column)),
-            )
-            adjusted_width = min(max_length + 2, 50)
-            worksheet.column_dimensions[
-                worksheet.cell(row=1, column=col_idx).column_letter
-            ].width = adjusted_width
+    with pd.ExcelWriter(filepath, engine="openpyxl") as writer:
+        for sheet_name, dataframe in sheets_data:
+            dataframe.to_excel(writer, index=False, sheet_name=sheet_name)
+
+            worksheet = writer.sheets[sheet_name]
+            for col_idx, column in enumerate(dataframe.columns, 1):
+                max_length = max(
+                    dataframe[column].astype(str).map(len).max() if len(dataframe) > 0 else 0,
+                    len(str(column)),
+                )
+                adjusted_width = min(max_length + 2, 50)
+                worksheet.column_dimensions[
+                    worksheet.cell(row=1, column=col_idx).column_letter
+                ].width = adjusted_width
 
     return filename
 
@@ -353,18 +406,46 @@ def run_execution(
             with ctx.conn_lock:
                 ctx.connections[query.id] = conn
 
-            df = pd.read_sql_query(sql_content, conn)
-            duration = time.time() - start_time
+            # Parsear si hay múltiples hojas
+            sheets = _parse_multi_sheet_sql(sql_content)
+            
+            if len(sheets) == 1:
+                # Query simple con una sola hoja
+                _, sql_query = sheets[0]
+                df = pd.read_sql_query(sql_query, conn)
+                duration = time.time() - start_time
 
-            if _is_cancelled(ctx, query.id):
-                _finish_query(idx, "cancelled", duration_seconds=round(duration, 2))
-                return
+                if _is_cancelled(ctx, query.id):
+                    _finish_query(idx, "cancelled", duration_seconds=round(duration, 2))
+                    return
 
-            filename = save_dataframe_to_excel(df, execution_id, query.name)
+                filename = save_dataframe_to_excel(df, execution_id, query.name)
+                total_rows = len(df)
+            else:
+                # Query con múltiples hojas
+                sheets_data = []
+                total_rows = 0
+                
+                for sheet_name, sql_query in sheets:
+                    if _is_cancelled(ctx, query.id):
+                        _finish_query(idx, "cancelled", duration_seconds=round(time.time() - start_time, 2))
+                        return
+                    
+                    df = pd.read_sql_query(sql_query, conn)
+                    sheets_data.append((sheet_name, df))
+                    total_rows += len(df)
+                
+                duration = time.time() - start_time
+
+                if _is_cancelled(ctx, query.id):
+                    _finish_query(idx, "cancelled", duration_seconds=round(duration, 2))
+                    return
+
+                filename = save_dataframe_to_excel(sheets_data, execution_id, query.name)
 
             _finish_query(
                 idx, "success",
-                row_count=len(df),
+                row_count=total_rows,
                 filename=filename,
                 duration_seconds=round(duration, 2),
             )

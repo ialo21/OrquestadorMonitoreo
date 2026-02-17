@@ -15,7 +15,7 @@ import {
 } from 'lucide-react'
 import type { QueryMeta, DatabaseConfig } from '@/types'
 import { deleteQuery, getQueryContent, importQueriesFromFolder } from '@/services/api'
-import { cn, getDbTypeBadge, formatDate, truncateText } from '@/lib/utils'
+import { cn, getDbTypeBadge, formatDate, truncateText, detectMultiSheetQuery } from '@/lib/utils'
 import QueryUploadModal from './QueryUploadModal'
 import CredentialModal from './CredentialModal'
 
@@ -359,35 +359,52 @@ export default function QueryPanel({
       )}
 
       {/* Modal: Preview SQL */}
-      {previewQuery && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 animate-fadeIn">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-3xl mx-4 max-h-[85vh] flex flex-col animate-slideUp">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">{previewQuery.name}</h3>
-                <p className="text-xs text-gray-500">Vista previa del contenido SQL</p>
-              </div>
-              <button
-                onClick={() => setPreviewQuery(null)}
-                className="p-1 rounded-lg hover:bg-gray-100 text-gray-400"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="flex-1 overflow-auto p-6">
-              {previewLoading ? (
-                <div className="flex items-center justify-center py-12">
-                  <Loader2 className="w-6 h-6 animate-spin text-primary-500" />
+      {previewQuery && (() => {
+        const sheetInfo = previewContent ? detectMultiSheetQuery(previewContent) : null
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 animate-fadeIn">
+            <div className="bg-white rounded-xl shadow-xl w-full max-w-3xl mx-4 max-h-[85vh] flex flex-col animate-slideUp">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-lg font-semibold text-gray-900">{previewQuery.name}</h3>
+                    {sheetInfo?.isMultiSheet && (
+                      <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700">
+                        {sheetInfo.sheetCount} hojas
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-500">
+                    Vista previa del contenido SQL
+                    {sheetInfo?.isMultiSheet && (
+                      <span className="ml-2 text-indigo-600">
+                        • {sheetInfo.sheetNames.join(', ')}
+                      </span>
+                    )}
+                  </p>
                 </div>
-              ) : (
-                <pre className="sql-preview bg-gray-50 rounded-lg p-4 border border-gray-200 overflow-x-auto whitespace-pre-wrap text-gray-800">
-                  {previewContent}
-                </pre>
-              )}
+                <button
+                  onClick={() => setPreviewQuery(null)}
+                  className="p-1 rounded-lg hover:bg-gray-100 text-gray-400"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <div className="flex-1 overflow-auto p-6">
+                {previewLoading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <Loader2 className="w-6 h-6 animate-spin text-primary-500" />
+                  </div>
+                ) : (
+                  <pre className="sql-preview bg-gray-50 rounded-lg p-4 border border-gray-200 overflow-x-auto whitespace-pre-wrap text-gray-800">
+                    {previewContent}
+                  </pre>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )
+      })()}
 
       {/* Modal: Credentials */}
       {showCredentials && selectedQueries.length > 0 && (
