@@ -13,6 +13,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
+from dotenv import load_dotenv
+
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
@@ -68,6 +70,10 @@ def _get_oauth_from_env() -> dict:
             "redirect_uris": ["http://localhost"]
         }
     return {}
+
+
+# Cargar variables de entorno desde .env (si existe)
+load_dotenv()
 
 
 # ── Helpers de persistencia ─────────────────────────────────────────────────

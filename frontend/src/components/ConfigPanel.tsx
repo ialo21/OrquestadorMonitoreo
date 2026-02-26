@@ -254,88 +254,29 @@ export default function ConfigPanel() {
                   </p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Client ID
-                    </label>
-                    <input
-                      type="text"
-                      value={emailConfig.oauth_credentials.installed.client_id}
-                      onChange={(e) => setEmailConfig({
-                        ...emailConfig,
-                        oauth_credentials: {
-                          ...emailConfig.oauth_credentials,
-                          installed: {
-                            ...emailConfig.oauth_credentials.installed,
-                            client_id: e.target.value
-                          }
-                        }
-                      })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 font-mono"
-                      placeholder="123456789-abc.apps.googleusercontent.com"
-                    />
+                {emailConfig.oauth_credentials.installed.client_id && emailConfig.oauth_credentials.installed.client_secret ? (
+                  <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <p className="text-sm font-medium text-green-800">Credenciales cargadas desde .env</p>
+                    <p className="text-xs text-green-700">
+                      Client ID y Client Secret detectados en el servidor. No se muestran por seguridad y no se pueden editar desde la interfaz.
+                    </p>
                   </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Client Secret
-                    </label>
-                    <input
-                      type="password"
-                      value={emailConfig.oauth_credentials.installed.client_secret}
-                      onChange={(e) => setEmailConfig({
-                        ...emailConfig,
-                        oauth_credentials: {
-                          ...emailConfig.oauth_credentials,
-                          installed: {
-                            ...emailConfig.oauth_credentials.installed,
-                            client_secret: e.target.value
-                          }
-                        }
-                      })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 font-mono"
-                      placeholder="GOCSPX-••••••••••••••••••••"
-                    />
-                  </div>
-
-                  <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Project ID
-                    </label>
-                    <input
-                      type="text"
-                      value={emailConfig.oauth_credentials.installed.project_id}
-                      onChange={(e) => setEmailConfig({
-                        ...emailConfig,
-                        oauth_credentials: {
-                          ...emailConfig.oauth_credentials,
-                          installed: {
-                            ...emailConfig.oauth_credentials.installed,
-                            project_id: e.target.value
-                          }
-                        }
-                      })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-                      placeholder="mi-proyecto-123"
-                    />
-                  </div>
-                </div>
-
-                <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                  <p className="text-xs text-amber-800 mb-1 font-medium">💡 Configuración recomendada</p>
-                  <p className="text-xs text-amber-700">
-                    Para mayor seguridad, configura las credenciales OAuth en el archivo <code className="bg-amber-100 px-1 rounded">.env</code> del servidor:
-                  </p>
-                  <pre className="text-xs text-amber-800 mt-2 bg-amber-100 p-2 rounded font-mono">
+                ) : (
+                  <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                    <p className="text-sm font-medium text-amber-800">Credenciales gestionadas por .env</p>
+                    <p className="text-xs text-amber-700">
+                      Las credenciales OAuth se leen del archivo <code className="bg-amber-100 px-1 rounded">.env</code> del servidor y no se pueden ver ni editar desde la interfaz.
+                    </p>
+                    <div className="p-2 bg-white border border-amber-200 rounded mt-2">
+                      <p className="text-xs text-amber-800 mb-1 font-medium">Configura tu .env</p>
+                      <pre className="text-xs text-amber-800 bg-amber-50 p-2 rounded font-mono">
 {`GOOGLE_OAUTH_CLIENT_ID=tu_client_id
 GOOGLE_OAUTH_CLIENT_SECRET=tu_secret
 GOOGLE_OAUTH_PROJECT_ID=tu_project_id`}
-                  </pre>
-                  <p className="text-xs text-amber-700 mt-2">
-                    Las credenciales del .env se cargarán automáticamente y no se guardarán en el repositorio.
-                  </p>
-                </div>
+                      </pre>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
