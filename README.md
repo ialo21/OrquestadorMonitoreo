@@ -12,6 +12,8 @@ Aplicación para gestionar y ejecutar queries de bases de datos de forma central
 - **Ejecución en background**: Las queries se ejecutan en segundo plano con seguimiento de progreso en tiempo real.
 - **Descarga de resultados**: Cada query genera un archivo Excel (.xlsx) descargable desde el historial de ejecuciones.
 - **Importación desde carpeta**: Importa en bloque las queries de la carpeta `querys/` del proyecto.
+- **Notificaciones por email**: Envía correos automáticos al inicio y fin de cada ejecución con variables personalizables.
+- **Subida automática a Google Drive**: Organiza los resultados en Drive con estructura de carpetas por mes/fecha/query.
 
 ## Requisitos
 
@@ -119,8 +121,9 @@ Para detener (Windows): ejecutar `stop.bat` o cerrar las ventanas de los proceso
 
 1. **Bases de datos**: En la pestaña "Bases de Datos" revisa o edita las conexiones (por defecto se crean Alloy y SQL Server según `correo.txt`). Selecciona el tipo de autenticación (SQL o Windows) para cada base. Usa "Probar" para validar la conexión.
 2. **Queries**: En "Queries" usa "Importar" para cargar las de la carpeta `querys/`, o "Agregar Query" para subir/pegar SQL y asociar una base de datos.
-3. **Ejecutar**: Marca las queries deseadas (o una sola) y pulsa "Ejecutar". Introduce las credenciales cuando se pida para bases con autenticación SQL (mismas para todas las bases o distintas por base). Las bases con autenticación de Windows no requieren credenciales.
-4. **Resultados**: En "Ejecuciones" verás el progreso y, al terminar, el enlace para descargar cada Excel generado.
+3. **Configuración** (opcional): En "Configuración" activa y configura el envío de correos electrónicos y/o la subida automática a Google Drive. Ver [EMAIL_DRIVE_CONFIG.md](EMAIL_DRIVE_CONFIG.md) para instrucciones detalladas.
+4. **Ejecutar**: Marca las queries deseadas (o una sola) y pulsa "Ejecutar". Introduce las credenciales cuando se pida para bases con autenticación SQL (mismas para todas las bases o distintas por base). Las bases con autenticación de Windows no requieren credenciales.
+5. **Resultados**: En "Ejecuciones" verás el progreso y, al terminar, el enlace para descargar cada Excel generado. Si configuraste email o Drive, también recibirás notificaciones y/o los archivos se subirán automáticamente.
 
 ## API (resumen)
 
@@ -137,6 +140,9 @@ Para detener (Windows): ejecutar `stop.bat` o cerrar las ventanas de los proceso
 | GET/POST | `/api/executions` | Listar ejecuciones / iniciar una nueva |
 | GET | `/api/executions/{id}` | Detalle y estado de una ejecución |
 | GET | `/api/executions/{id}/download/{filename}` | Descargar archivo Excel de resultado |
+| GET/PUT | `/api/config/email` | Obtener / actualizar configuración de email |
+| POST | `/api/config/email/test` | Probar configuración de email |
+| GET/PUT | `/api/config/drive` | Obtener / actualizar configuración de Drive |
 
 ## Tecnologías
 

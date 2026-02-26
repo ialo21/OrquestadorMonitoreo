@@ -155,3 +155,34 @@ export async function cancelQueryInExecution(
 export function getDownloadUrl(executionId: string, filename: string): string {
   return `${BASE}/executions/${executionId}/download/${encodeURIComponent(filename)}`
 }
+
+// ── Configuración ───────────────────────────────────────────────────────────
+
+export async function getEmailConfig(): Promise<import('@/types').EmailConfig> {
+  return request('/config/email')
+}
+
+export async function updateEmailConfig(config: import('@/types').EmailConfig): Promise<import('@/types').EmailConfig> {
+  return request('/config/email', {
+    method: 'PUT',
+    body: JSON.stringify(config),
+  })
+}
+
+export async function testEmailConfig(config: import('@/types').EmailConfig): Promise<{ success: boolean; message: string }> {
+  return request('/config/email/test', {
+    method: 'POST',
+    body: JSON.stringify(config),
+  })
+}
+
+export async function getDriveConfig(): Promise<import('@/types').DriveConfig> {
+  return request('/config/drive')
+}
+
+export async function updateDriveConfig(config: import('@/types').DriveConfig): Promise<import('@/types').DriveConfig> {
+  return request('/config/drive', {
+    method: 'PUT',
+    body: JSON.stringify(config),
+  })
+}

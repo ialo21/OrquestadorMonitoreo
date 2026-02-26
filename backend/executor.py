@@ -18,14 +18,20 @@ from models import (
     PeriodInput,
     QueryResult,
     QueryMeta,
+    EmailConfig,
+    DriveConfig,
 )
 from database_connector import get_connection
+from email_service import send_start_email, send_end_email
+from drive_service import upload_to_drive
 
 
 DATA_DIR = Path(__file__).parent / "data"
 RESULTS_DIR = DATA_DIR / "results"
 QUERIES_SQL_DIR = DATA_DIR / "queries_sql"
 EXECUTIONS_FILE = DATA_DIR / "executions.json"
+EMAIL_CONFIG_FILE = DATA_DIR / "email_config.json"
+DRIVE_CONFIG_FILE = DATA_DIR / "drive_config.json"
 
 
 # ── Thread safety ────────────────────────────────────────────────────────────
@@ -66,6 +72,24 @@ def _load_executions() -> list[dict]:
 def _save_executions(executions: list[dict]):
     with open(EXECUTIONS_FILE, "w", encoding="utf-8") as f:
         json.dump(executions, f, ensure_ascii=False, indent=2)
+
+
+def _load_email_config() -> EmailConfig:
+    """Carga la configuración de email."""
+    if EMAIL_CONFIG_FILE.exists():
+        with open(EMAIL_CONFIG_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            return EmailConfig(**data)
+    return EmailConfig()
+
+
+def _load_drive_config() -> DriveConfig:
+    """Carga la configuración de Google Drive."""
+    if DRIVE_CONFIG_FILE.exists():
+        with open(DRIVE_CONFIG_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            return DriveConfig(**data)
+    return DriveConfig()
 
 
 def _update_execution(execution_id: str, update_data: dict):
@@ -347,6 +371,17 @@ def run_execution(
         "completed_queries": 0,
     })
 
+    # Enviar email de inicio si está configurado
+    email_config = _load_email_config()
+    execution_date = datetime.now()
+    query_names = [q.name for q in queries]
+    
+    if email_config.enabled and email_config.send_start_email:
+        try:
+            send_start_email(email_config, execution_date, query_names, period)
+        except Exception as e:
+            print(f"Error al enviar email de inicio: {e}")
+
     def _finish_query(idx: int, status: str, **kwargs):
         """Helper thread-safe para marcar una query como terminada."""
         with results_lock:
@@ -457,6 +492,15 @@ def run_execution(
 
                 filename = save_dataframe_to_excel(sheets_data, execution_id, query.name, period=period)
 
+            # Subir a Google Drive si está configurado
+            drive_config = _load_drive_config()
+            if drive_config.enabled:
+                try:
+                    file_path = RESULTS_DIR / execution_id / filename
+                    upload_to_drive(drive_config, file_path, query.name, execution_date, period)
+                except Exception as e:
+                    print(f"Error al subir a Drive: {e}")
+            
             _finish_query(
                 idx, "success",
                 row_count=total_rows,
@@ -517,6 +561,21 @@ def run_execution(
         "results": copy.deepcopy(results),
         "completed_queries": completed_count[0],
     })
+
+    # Enviar email de fin si está configurado
+    if email_config.enabled and email_config.send_end_email:
+        try:
+            send_end_email(
+                email_config,
+                execution_date,
+                query_names,
+                final_status,
+                total,
+                completed_count[0],
+                period
+            )
+        except Exception as e:
+            print(f"Error al enviar email de fin: {e}")
 
     with _registry_lock:
         _active_executions.pop(execution_id, None)

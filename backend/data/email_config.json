@@ -1,0 +1,18 @@
+{
+  "enabled": false,
+  "smtp_host": "",
+  "smtp_port": 587,
+  "smtp_user": "",
+  "smtp_password": "",
+  "use_tls": true,
+  "send_start_email": false,
+  "start_email_to": [],
+  "start_email_cc": [],
+  "start_email_subject": "Inicio de Ejecución de Reportes",
+  "start_email_body": "",
+  "send_end_email": false,
+  "end_email_to": [],
+  "end_email_cc": [],
+  "end_email_subject": "Finalización de Ejecución de Reportes",
+  "end_email_body": ""
+}

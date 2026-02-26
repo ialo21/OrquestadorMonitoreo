@@ -1,4 +1,4 @@
-import { Database, FileText, Server, History } from 'lucide-react'
+import { Database, FileText, Server, History, Settings } from 'lucide-react'
 import type { TabId } from '@/types'
 import { cn } from '@/lib/utils'
 import logoIS from '@/assets/simboloIS-sin-fondo.png'
@@ -15,6 +15,7 @@ const tabs: { id: TabId; label: string; icon: typeof Database }[] = [
   { id: 'queries', label: 'Queries', icon: FileText },
   { id: 'databases', label: 'Bases de Datos', icon: Server },
   { id: 'executions', label: 'Ejecuciones', icon: History },
+  { id: 'config', label: 'Configuración', icon: Settings },
 ]
 
 export default function Header({
@@ -28,6 +29,7 @@ export default function Header({
     queries: queryCount,
     databases: dbCount,
     executions: executionCount,
+    config: 0,
   }
 
   return (

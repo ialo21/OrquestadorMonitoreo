@@ -92,6 +92,47 @@ export interface ExecutionRequest {
   use_dynamic_dates?: boolean
 }
 
+// ── Configuración de Email ──────────────────────────────────────────────────
+
+export interface EmailConfig {
+  enabled: boolean
+  
+  // Credenciales OAuth de Google
+  oauth_credentials: {
+    installed: {
+      client_id: string
+      project_id: string
+      auth_uri: string
+      token_uri: string
+      auth_provider_x509_cert_url: string
+      client_secret: string
+      redirect_uris: string[]
+    }
+  }
+  
+  // Email de inicio
+  send_start_email: boolean
+  start_email_to: string[]
+  start_email_cc: string[]
+  start_email_subject: string
+  start_email_body: string
+  
+  // Email de fin
+  send_end_email: boolean
+  end_email_to: string[]
+  end_email_cc: string[]
+  end_email_subject: string
+  end_email_body: string
+}
+
+// ── Configuración de Google Drive ───────────────────────────────────────────
+
+export interface DriveConfig {
+  enabled: boolean
+  credentials_file: string
+  base_folder_id: string
+}
+
 // ── Tabs ────────────────────────────────────────────────────────────────────
 
-export type TabId = 'queries' | 'databases' | 'executions'
+export type TabId = 'queries' | 'databases' | 'executions' | 'config'

@@ -29,6 +29,8 @@ from models import (
     TestConnectionRequest,
     TestConnectionResponse,
     CredentialInput,
+    EmailConfig,
+    DriveConfig,
 )
 from database_connector import test_connection as db_test_connection
 from executor import run_execution, cancel_execution, cancel_query_in_execution
@@ -42,6 +44,31 @@ EXECUTIONS_FILE = DATA_DIR / "executions.json"
 QUERIES_SQL_DIR = DATA_DIR / "queries_sql"
 RESULTS_DIR = DATA_DIR / "results"
 QUERYS_IMPORT_DIR = Path(__file__).parent.parent / "querys"
+EMAIL_CONFIG_FILE = DATA_DIR / "email_config.json"
+DRIVE_CONFIG_FILE = DATA_DIR / "drive_config.json"
+
+
+# ── Carga de credenciales OAuth desde .env ──────────────────────────────────
+
+
+def _get_oauth_from_env() -> dict:
+    """Obtiene credenciales OAuth de variables de entorno si existen."""
+    client_id = os.getenv("GOOGLE_OAUTH_CLIENT_ID", "")
+    client_secret = os.getenv("GOOGLE_OAUTH_CLIENT_SECRET", "")
+    project_id = os.getenv("GOOGLE_OAUTH_PROJECT_ID", "")
+    
+    if client_id and client_secret:
+        return {
+            "client_id": client_id,
+            "project_id": project_id,
+            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+            "token_uri": "https://oauth2.googleapis.com/token",
+            "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+            "client_secret": client_secret,
+            "redirect_uris": ["http://localhost"]
+        }
+    return {}
+
 
 # ── Helpers de persistencia ─────────────────────────────────────────────────
 
@@ -59,9 +86,17 @@ def _load_json(path: Path) -> list[dict]:
     return []
 
 
-def _save_json(path: Path, data: list[dict]):
+def _save_json(path: Path, data: list[dict] | dict):
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
+
+
+def _load_config(path: Path) -> dict:
+    """Carga un archivo de configuración (dict)."""
+    if path.exists():
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {}
 
 
 # ── Inicialización de datos por defecto ─────────────────────────────────────
@@ -135,6 +170,10 @@ async def lifespan(app: FastAPI):
         _save_json(QUERIES_FILE, [])
     if not EXECUTIONS_FILE.exists():
         _save_json(EXECUTIONS_FILE, [])
+    if not EMAIL_CONFIG_FILE.exists():
+        _save_json(EMAIL_CONFIG_FILE, EmailConfig().model_dump())
+    if not DRIVE_CONFIG_FILE.exists():
+        _save_json(DRIVE_CONFIG_FILE, DriveConfig().model_dump())
     _recover_interrupted_executions()
     yield
     # Shutdown (nada que limpiar)
@@ -525,6 +564,71 @@ def cancel_single_query(execution_id: str, query_id: str):
     if not success:
         raise HTTPException(404, "Ejecución o query no encontrada, o ya finalizada")
     return {"ok": True, "message": "Cancelación de query solicitada"}
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  CONFIGURACIÓN DE EMAIL Y GOOGLE DRIVE
+# ══════════════════════════════════════════════════════════════════════════════
+
+
+@app.get("/api/config/email")
+def get_email_config():
+    """Obtiene la configuración de email."""
+    config = _load_config(EMAIL_CONFIG_FILE)
+    if not config:
+        config = EmailConfig().model_dump()
+    
+    # Aplicar credenciales desde .env si existen
+    oauth_env = _get_oauth_from_env()
+    if oauth_env:
+        config.setdefault("oauth_credentials", {})["installed"] = oauth_env
+    
+    return config
+
+
+@app.put("/api/config/email")
+def update_email_config(config: EmailConfig):
+    """Actualiza la configuración de email."""
+    _save_json(EMAIL_CONFIG_FILE, config.model_dump())
+    return config.model_dump()
+
+
+@app.post("/api/config/email/test")
+async def test_email_config(config: EmailConfig):
+    """Envía un correo de prueba para verificar la configuración OAuth."""
+    try:
+        if not config.start_email_to:
+            raise HTTPException(status_code=400, detail="Debe especificar al menos un destinatario en 'Para'")
+        
+        if not config.oauth_credentials.get("installed", {}).get("client_id"):
+            raise HTTPException(status_code=400, detail="Debe configurar las credenciales OAuth de Google")
+        
+        send_email(
+            config,
+            config.start_email_to,
+            config.start_email_cc,
+            "Prueba de Configuración - Orquestador de Reportes",
+            "Este es un correo de prueba para verificar la configuración OAuth de Google.\n\n"
+            "Si recibes este mensaje, la configuración es correcta.\n\n"
+            f"Fecha de prueba: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+        )
+        return {"success": True, "message": "Correo de prueba enviado exitosamente. Si fue la primera vez, se abrió una ventana de navegador para autorizar el acceso."}
+    except Exception as e:
+        return {"success": False, "message": str(e)}
+
+
+@app.get("/api/config/drive")
+def get_drive_config():
+    """Obtiene la configuración de Google Drive."""
+    config = _load_config(DRIVE_CONFIG_FILE)
+    return config if config else DriveConfig().model_dump()
+
+
+@app.put("/api/config/drive")
+def update_drive_config(config: DriveConfig):
+    """Actualiza la configuración de Google Drive."""
+    _save_json(DRIVE_CONFIG_FILE, config.model_dump())
+    return config.model_dump()
 
 
 # ══════════════════════════════════════════════════════════════════════════════

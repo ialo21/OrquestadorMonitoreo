@@ -116,3 +116,45 @@ class TestConnectionRequest(BaseModel):
 class TestConnectionResponse(BaseModel):
     success: bool
     message: str
+
+
+# ── Configuración de Email ──────────────────────────────────────────────────
+
+class EmailConfig(BaseModel):
+    """Configuración para envío de correos electrónicos usando OAuth de Google."""
+    enabled: bool = False
+    
+    # Credenciales OAuth de Google
+    oauth_credentials: dict = {
+        "installed": {
+            "client_id": "",
+            "project_id": "",
+            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+            "token_uri": "https://oauth2.googleapis.com/token",
+            "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+            "client_secret": "",
+            "redirect_uris": ["http://localhost"]
+        }
+    }
+    
+    # Email de inicio
+    send_start_email: bool = False
+    start_email_to: list[str] = []
+    start_email_cc: list[str] = []
+    start_email_subject: str = "Inicio de Ejecución de Reportes"
+    start_email_body: str = ""
+    
+    # Email de fin
+    send_end_email: bool = False
+    end_email_to: list[str] = []
+    end_email_cc: list[str] = []
+    end_email_subject: str = "Finalización de Ejecución de Reportes"
+    end_email_body: str = ""
+
+
+# ── Configuración de Google Drive ───────────────────────────────────────────
+
+class DriveConfig(BaseModel):
+    enabled: bool = False
+    credentials_file: str = ""  # Ruta al archivo credentials.json de Google
+    base_folder_id: str = ""  # ID de la carpeta base en Drive donde crear la estructura

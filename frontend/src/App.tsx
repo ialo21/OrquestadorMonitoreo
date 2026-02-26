@@ -4,6 +4,7 @@ import Footer from './components/Footer'
 import QueryPanel from './components/QueryPanel'
 import DatabasePanel from './components/DatabasePanel'
 import ExecutionPanel from './components/ExecutionPanel'
+import ConfigPanel from './components/ConfigPanel'
 import { fetchDatabases, fetchQueries, fetchExecutions } from './services/api'
 import type { TabId, DatabaseConfig, QueryMeta, Execution } from './types'
 
@@ -85,6 +86,10 @@ function App() {
             activeExecutionId={activeExecutionId}
             onClear={() => setActiveExecutionId(null)}
           />
+        )}
+
+        {activeTab === 'config' && (
+          <ConfigPanel />
         )}
       </main>
 
