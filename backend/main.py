@@ -3,6 +3,14 @@ Orquestador de Reportes BBDD - Backend API
 FastAPI application for managing and executing database queries.
 """
 
+from dotenv import load_dotenv, dotenv_values
+from pathlib import Path as DotenvPath
+
+# Cargar variables de entorno desde .env (si existe) - DEBE SER LO PRIMERO
+# Buscar .env en la raíz del proyecto (un nivel arriba de backend/)
+env_path = DotenvPath(__file__).parent.parent / ".env"
+load_dotenv(dotenv_path=env_path)
+
 import json
 import os
 import shutil
@@ -12,8 +20,6 @@ from contextlib import asynccontextmanager
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
-
-from dotenv import load_dotenv
 
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -36,6 +42,8 @@ from models import (
 )
 from database_connector import test_connection as db_test_connection
 from executor import run_execution, cancel_execution, cancel_query_in_execution
+from email_service import send_email
+from drive_service import drive_token_exists, run_drive_authorization
 
 # ── Configuración de rutas ──────────────────────────────────────────────────
 
@@ -54,26 +62,43 @@ DRIVE_CONFIG_FILE = DATA_DIR / "drive_config.json"
 
 
 def _get_oauth_from_env() -> dict:
-    """Obtiene credenciales OAuth de variables de entorno si existen."""
-    client_id = os.getenv("GOOGLE_OAUTH_CLIENT_ID", "")
-    client_secret = os.getenv("GOOGLE_OAUTH_CLIENT_SECRET", "")
-    project_id = os.getenv("GOOGLE_OAUTH_PROJECT_ID", "")
-    
+    """Obtiene credenciales OAuth de .env o variables de entorno (relee en cada llamada)."""
+    candidates = [
+        env_path,
+        DotenvPath(__file__).parent / ".env",  # por si se dejó en backend/
+        DotenvPath.cwd() / ".env",             # cwd del proceso
+    ]
+
+    env_vars: dict[str, str] = {}
+    for candidate in candidates:
+        if candidate.exists():
+            env_vars = dotenv_values(candidate)
+            # Normalizar posibles BOM u otros prefijos en las claves (Notepad agrega BOM UTF-8)
+            env_vars = {k.lstrip("\ufeff"): v for k, v in env_vars.items()}
+            if env_vars.get("GOOGLE_OAUTH_CLIENT_ID"):
+                break
+
+    # Si no encontró en archivo, intentar con el entorno
+    client_id = env_vars.get("GOOGLE_OAUTH_CLIENT_ID") or os.getenv("GOOGLE_OAUTH_CLIENT_ID", "")
+    client_secret = env_vars.get("GOOGLE_OAUTH_CLIENT_SECRET") or os.getenv("GOOGLE_OAUTH_CLIENT_SECRET", "")
+    project_id = env_vars.get("GOOGLE_OAUTH_PROJECT_ID") or os.getenv("GOOGLE_OAUTH_PROJECT_ID", "")
+
     if client_id and client_secret:
         return {
-            "client_id": client_id,
-            "project_id": project_id,
+            "client_id": client_id.strip(),
+            "project_id": project_id.strip() if project_id else "",
             "auth_uri": "https://accounts.google.com/o/oauth2/auth",
             "token_uri": "https://oauth2.googleapis.com/token",
             "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-            "client_secret": client_secret,
-            "redirect_uris": ["http://localhost"]
+            "client_secret": client_secret.strip(),
+            "redirect_uris": ["http://localhost"],
         }
+    # Log mínimo para diagnosticar por qué no se encontraron credenciales
+    print(
+        "[oauth_env] No se encontraron GOOGLE_OAUTH_CLIENT_ID/SECRET en:",
+        {"found_in_env_file": bool(env_vars), "client_id": client_id, "client_secret": client_secret}
+    )
     return {}
-
-
-# Cargar variables de entorno desde .env (si existe)
-load_dotenv()
 
 
 # ── Helpers de persistencia ─────────────────────────────────────────────────
@@ -627,7 +652,15 @@ async def test_email_config(config: EmailConfig):
 def get_drive_config():
     """Obtiene la configuración de Google Drive."""
     config = _load_config(DRIVE_CONFIG_FILE)
-    return config if config else DriveConfig().model_dump()
+    if not config:
+        config = DriveConfig().model_dump()
+    
+    # Aplicar credenciales desde .env si existen (igual que email)
+    oauth_env = _get_oauth_from_env()
+    if oauth_env:
+        config.setdefault("oauth_credentials", {})["installed"] = oauth_env
+    
+    return config
 
 
 @app.put("/api/config/drive")
@@ -635,6 +668,25 @@ def update_drive_config(config: DriveConfig):
     """Actualiza la configuración de Google Drive."""
     _save_json(DRIVE_CONFIG_FILE, config.model_dump())
     return config.model_dump()
+
+
+@app.get("/api/config/drive/token")
+def get_drive_token_status():
+    """Devuelve si existe token OAuth guardado para Drive."""
+    return {"has_token": drive_token_exists()}
+
+
+@app.post("/api/config/drive/authorize")
+def authorize_drive(config: DriveConfig | None = None):
+    """Ejecuta el flujo OAuth de Drive para guardar/renovar token."""
+    # Usar config enviada o la almacenada en disco
+    stored = _load_config(DRIVE_CONFIG_FILE)
+    base = DriveConfig().model_dump()
+    merged = {**base, **(stored or {}), **(config.model_dump() if config else {})}
+    drive_conf = DriveConfig(**merged)
+
+    ok, msg = run_drive_authorization(drive_conf)
+    return {"success": ok, "message": msg, "has_token": ok and drive_token_exists()}
 
 
 # ══════════════════════════════════════════════════════════════════════════════

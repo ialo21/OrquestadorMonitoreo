@@ -186,3 +186,14 @@ export async function updateDriveConfig(config: import('@/types').DriveConfig): 
     body: JSON.stringify(config),
   })
 }
+
+export async function getDriveTokenStatus(): Promise<{ has_token: boolean }> {
+  return request('/config/drive/token')
+}
+
+export async function authorizeDrive(config: import('@/types').DriveConfig): Promise<{ success: boolean; message: string; has_token: boolean }> {
+  return request('/config/drive/authorize', {
+    method: 'POST',
+    body: JSON.stringify(config),
+  })
+}

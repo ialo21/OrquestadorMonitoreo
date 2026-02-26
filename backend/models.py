@@ -156,5 +156,28 @@ class EmailConfig(BaseModel):
 
 class DriveConfig(BaseModel):
     enabled: bool = False
-    credentials_file: str = ""  # Ruta al archivo credentials.json de Google
-    base_folder_id: str = ""  # ID de la carpeta base en Drive donde crear la estructura
+    
+    # Credenciales OAuth de Google (mismas que email)
+    oauth_credentials: dict = {
+        "installed": {
+            "client_id": "",
+            "project_id": "",
+            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+            "token_uri": "https://oauth2.googleapis.com/token",
+            "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+            "client_secret": "",
+            "redirect_uris": ["http://localhost"]
+        }
+    }
+    
+    base_folder_id: str = ""  # ID de la carpeta base en Drive
+    
+    # Estructura de carpetas personalizable (array de niveles de carpetas)
+    # Cada elemento define un nivel de subcarpetas usando variables
+    # Variables disponibles: {MES_NOMBRE}, {MES_NUM}, {AÑO}, {FECHA}, {QUERY_NAME}
+    # Ejemplos: "{MES_NOMBRE} {AÑO}", "{FECHA}", "{QUERY_NAME}"
+    folder_structure: list[str] = [
+        "{MES_NOMBRE} {AÑO}",  # Nivel 1: "Diciembre 2025"
+        "{FECHA}",              # Nivel 2: "2025-12-15"
+        "{QUERY_NAME}"          # Nivel 3: Nombre de la query
+    ]

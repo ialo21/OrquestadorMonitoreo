@@ -3,10 +3,7 @@ node_modules
 **/node_modules
 
 # Resultados y datos generados
-backend/data/results/
-backend/data/email_config.json
-backend/data/drive_config.json
-backend/data/gmail_token.pickle
+backend/data/
 *.xlsx
 *.csv
 

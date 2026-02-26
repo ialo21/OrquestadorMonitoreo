@@ -114,67 +114,85 @@ Haz clic en **"Guardar Configuración"** para aplicar los cambios.
 
 ## Configuración de Google Drive
 
-El orquestador puede subir automáticamente los archivos Excel resultantes a Google Drive, organizándolos en carpetas por mes, fecha y query.
+El orquestador puede subir automáticamente los archivos Excel resultantes a Google Drive, organizándolos en una **estructura de carpetas completamente personalizable**.
 
-### Estructura de carpetas creada
+### Estructura de carpetas personalizable
 
+Puedes definir la jerarquía de carpetas usando variables:
+
+**Variables disponibles:**
+- `{MES_NOMBRE}` - Nombre del mes (ej: Diciembre)
+- `{MES_NUM}` - Número del mes con cero (ej: 12)
+- `{AÑO}` - Año (ej: 2025)
+- `{FECHA}` - Fecha completa (ej: 2025-12-15)
+- `{QUERY_NAME}` - Nombre de la query
+
+**Estructura por defecto:**
 ```
-📁 Carpeta Base (configurada)
- └─ 📁 [Mes Año] (ej: Diciembre 2025)
-     └─ 📁 [Fecha] (ej: 2025-12-15)
-         └─ 📁 [Nombre Query]
+📁 Carpeta Base (configurada arriba)
+ └─ 📁 {MES_NOMBRE} {AÑO}        → Diciembre 2025
+     └─ 📁 {FECHA}                 → 2025-12-15
+         └─ 📁 {QUERY_NAME}        → Reporte Recibo Caja
              └─ 📄 Archivo.xlsx
 ```
 
-### 1. Crear proyecto en Google Cloud
+**Ejemplos de personalización:**
+- Agrupación simple por mes: `["{MES_NOMBRE} {AÑO}", "{QUERY_NAME}"]`
+- Por año y mes: `["{AÑO}", "{MES_NUM}-{MES_NOMBRE}", "{FECHA}", "{QUERY_NAME}"]`
+- Solo por fecha: `["{FECHA}", "{QUERY_NAME}"]`
+
+Las carpetas se crean automáticamente si no existen.
+
+### 1. Configurar credenciales OAuth de Google
+
+Google Drive usa las **mismas credenciales OAuth que el email**. Si ya configuraste el email, ¡no necesitas hacer nada más!
+
+#### Configurar en el servidor (Recomendado)
+
+Si aún no lo has hecho, crea un archivo `.env` en la raíz del proyecto:
+
+```bash
+GOOGLE_OAUTH_CLIENT_ID=tu_client_id_aqui
+GOOGLE_OAUTH_CLIENT_SECRET=tu_client_secret_aqui
+GOOGLE_OAUTH_PROJECT_ID=tu_project_id_aqui
+```
+
+**Ventajas**:
+- Las credenciales se cargan automáticamente para email Y Drive
+- No se guardan secretos en el repositorio
+- Más seguro para entornos de producción
+
+#### Crear credenciales (si no las tienes)
 
 1. Ve a [Google Cloud Console](https://console.cloud.google.com/)
-2. Crea un nuevo proyecto o selecciona uno existente
-3. En el menú, ve a **APIs y servicios** > **Biblioteca**
-4. Busca "Google Drive API" y haz clic en **Habilitar**
+2. Crea un proyecto o usa el existente
+3. Habilita **Gmail API** y **Google Drive API**
+4. Crea credenciales OAuth 2.0 tipo "Aplicación de escritorio"
+5. Descarga el JSON y extrae `client_id`, `client_secret` y `project_id`
+6. Agégalos al archivo `.env`
 
-### 2. Crear credenciales
+### 2. Configurar carpeta base y estructura
 
-1. Ve a **APIs y servicios** > **Credenciales**
-2. Haz clic en **Crear credenciales** > **ID de cliente de OAuth**
-3. Si es la primera vez, configura la pantalla de consentimiento:
-   - Tipo: Interno (si tu organización tiene Google Workspace) o Externo
-   - Completa la información básica
-   - En alcances, agrega `https://www.googleapis.com/auth/drive.file`
-4. Selecciona tipo de aplicación: **Aplicación de escritorio**
-5. Dale un nombre y crea
-6. Descarga el archivo JSON de credenciales
+1. Ve a **Configuración** → **Google Drive**
+2. Marca **"Habilitar subida a Google Drive"**
+3. Configura:
+   - **ID de carpeta base**: Obtén el ID desde la URL de Drive
+     - URL: `https://drive.google.com/drive/folders/1a2b3c4d5e6f7g8h9i0j`
+     - ID: `1a2b3c4d5e6f7g8h9i0j`
+   - **Estructura de carpetas**: Personaliza los niveles de subcarpetas (ver sección anterior)
 
-### 3. Configurar en el servidor
-
-1. Coloca el archivo `credentials.json` descargado en una ubicación segura del servidor
-   - Ejemplo: `C:\config\google-drive-credentials.json`
-2. Crea una carpeta base en Google Drive donde se almacenarán los reportes
-3. Obtén el ID de la carpeta desde la URL:
-   - URL: `https://drive.google.com/drive/folders/1a2b3c4d5e6f7g8h9i0j`
-   - ID: `1a2b3c4d5e6f7g8h9i0j`
-
-### 4. Configurar en la interfaz
-
-1. Ve a la pestaña **Configuración** en la interfaz web
-2. Selecciona la sección **Google Drive**
-3. Marca la casilla **"Habilitar subida a Google Drive"**
-4. Completa los campos:
-   - **Ruta al archivo credentials.json**: Ruta absoluta al archivo descargado
-   - **ID de carpeta base en Drive**: El ID obtenido de la URL
-
-### 5. Primera autorización
+### 3. Primera autorización
 
 La primera vez que se ejecute una query con Google Drive habilitado:
 
 1. El servidor abrirá una ventana de navegador para autorizar el acceso
 2. Inicia sesión con tu cuenta de Google
 3. Acepta los permisos solicitados
-4. El token de acceso se guardará automáticamente en `backend/data/drive_token.pickle`
+4. El token se guardará automáticamente en `backend/data/drive_token.pickle`
 
 **Nota**: Este paso solo se realiza una vez. Los accesos futuros usarán el token guardado.
 
-### 6. Guardar
+### 4. Guardar configuración
 
 Haz clic en **"Guardar Configuración"** para aplicar los cambios.
 
@@ -223,9 +241,10 @@ Esto instalará:
 
 ### Google Drive
 
-**Error: "credentials_file no encontrado"**
-- Verifica que la ruta al archivo credentials.json sea correcta y absoluta
-- Asegúrate de que el archivo exista en esa ubicación
+**Error: "Credenciales OAuth no configuradas"**
+- Asegúrate de haber configurado las credenciales en el archivo `.env`
+- Verifica que `GOOGLE_OAUTH_CLIENT_ID` y `GOOGLE_OAUTH_CLIENT_SECRET` estén correctos
+- También puedes configurarlas desde la interfaz web en Configuración → Google Drive
 
 **Error: "base_folder_id inválido"**
 - Confirma que el ID de carpeta sea correcto

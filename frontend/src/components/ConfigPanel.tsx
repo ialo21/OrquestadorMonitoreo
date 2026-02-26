@@ -10,6 +10,8 @@ import {
   Plus,
   X,
   Info,
+  Play,
+  Trash2,
 } from 'lucide-react'
 import type { EmailConfig, DriveConfig } from '@/types'
 import {
@@ -18,6 +20,8 @@ import {
   testEmailConfig,
   getDriveConfig,
   updateDriveConfig,
+  getDriveTokenStatus,
+  authorizeDrive,
 } from '@/services/api'
 import { cn } from '@/lib/utils'
 
@@ -56,10 +60,28 @@ export default function ConfigPanel() {
   // Drive state
   const [driveConfig, setDriveConfig] = useState<DriveConfig>({
     enabled: false,
-    credentials_file: '',
+    oauth_credentials: {
+      installed: {
+        client_id: '',
+        project_id: '',
+        auth_uri: '',
+        token_uri: '',
+        auth_provider_x509_cert_url: '',
+        client_secret: '',
+        redirect_uris: [],
+      },
+    },
     base_folder_id: '',
+    folder_structure: ['{MES_NOMBRE} {AÑO}', '{FECHA}', '{QUERY_NAME}'],
   })
+  const [folderStructureInput, setFolderStructureInput] = useState<string[]>([
+    '{MES_NOMBRE} {AÑO}',
+    '{FECHA}',
+    '{QUERY_NAME}',
+  ])
   const [driveSaving, setDriveSaving] = useState(false)
+  const [driveAuthorizing, setDriveAuthorizing] = useState(false)
+  const [driveHasToken, setDriveHasToken] = useState<boolean | null>(null)
   const [driveMessage, setDriveMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   
   // Temporary inputs for email lists
@@ -71,6 +93,7 @@ export default function ConfigPanel() {
   useEffect(() => {
     loadEmailConfig()
     loadDriveConfig()
+    loadDriveTokenStatus()
   }, [])
 
   const loadEmailConfig = async () => {
@@ -86,8 +109,18 @@ export default function ConfigPanel() {
     try {
       const data = await getDriveConfig()
       setDriveConfig(data)
+      setFolderStructureInput(data.folder_structure || [])
     } catch (err: any) {
       console.error('Error loading drive config:', err)
+    }
+  }
+
+  const loadDriveTokenStatus = async () => {
+    try {
+      const res = await getDriveTokenStatus()
+      setDriveHasToken(res.has_token)
+    } catch (err) {
+      setDriveHasToken(null)
     }
   }
 
@@ -126,13 +159,34 @@ export default function ConfigPanel() {
     setDriveSaving(true)
     setDriveMessage(null)
     try {
-      await updateDriveConfig(driveConfig)
+      await updateDriveConfig({
+        ...driveConfig,
+        folder_structure: folderStructureInput.filter((v) => v.trim().length > 0),
+      })
       setDriveMessage({ type: 'success', text: 'Configuración guardada exitosamente' })
       setTimeout(() => setDriveMessage(null), 3000)
+      loadDriveTokenStatus()
     } catch (err: any) {
       setDriveMessage({ type: 'error', text: err.message })
     } finally {
       setDriveSaving(false)
+    }
+  }
+
+  const handleAuthorizeDrive = async () => {
+    setDriveAuthorizing(true)
+    setDriveMessage(null)
+    try {
+      const res = await authorizeDrive({
+        ...driveConfig,
+        folder_structure: folderStructureInput.filter((v) => v.trim().length > 0),
+      })
+      setDriveMessage({ type: res.success ? 'success' : 'error', text: res.message })
+      setDriveHasToken(res.has_token)
+    } catch (err: any) {
+      setDriveMessage({ type: 'error', text: err.message })
+    } finally {
+      setDriveAuthorizing(false)
     }
   }
 
@@ -636,28 +690,29 @@ GOOGLE_OAUTH_PROJECT_ID=tu_project_id`}
                 <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                   <p className="text-sm text-blue-800 mb-2 font-medium">Configuración de Google Drive</p>
                   <ol className="text-xs text-blue-700 space-y-1 list-decimal list-inside">
-                    <li>Crea un proyecto en Google Cloud Console</li>
-                    <li>Habilita la API de Google Drive</li>
-                    <li>Descarga el archivo credentials.json</li>
-                    <li>Coloca el archivo en una ubicación segura del servidor</li>
+                    <li>Usa las mismas credenciales OAuth que el correo (archivo .env)</li>
+                    <li>Habilita la API de Google Drive en tu proyecto</li>
                     <li>Obtén el ID de la carpeta base en Drive (desde la URL)</li>
+                    <li>Personaliza la estructura de carpetas (opcional)</li>
                   </ol>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Ruta al archivo credentials.json
-                  </label>
-                  <input
-                    type="text"
-                    value={driveConfig.credentials_file}
-                    onChange={(e) => setDriveConfig({ ...driveConfig, credentials_file: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    placeholder="C:\config\google-credentials.json"
-                  />
-                  <p className="mt-1 text-xs text-gray-500">
-                    Ruta absoluta al archivo de credenciales de Google
+                  <p className="text-xs text-blue-700 mt-3">
+                    Las credenciales se cargan automáticamente desde el .env; no necesitas subir un archivo credentials.json.
                   </p>
+                  <div className="mt-3 text-xs text-blue-800 flex items-center gap-2">
+                    <span className="font-medium">Estado de token OAuth:</span>
+                    {driveHasToken === null ? 'Desconocido' : driveHasToken ? 'Ya autorizado' : 'No existe token'}
+                    {!driveHasToken && (
+                      <button
+                        type="button"
+                        onClick={handleAuthorizeDrive}
+                        disabled={driveAuthorizing}
+                        className="ml-auto inline-flex items-center gap-2 px-3 py-1.5 bg-primary-600 text-white rounded-md text-xs hover:bg-primary-700 disabled:opacity-50"
+                      >
+                        {driveAuthorizing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
+                        Autorizar Drive
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 <div>
@@ -676,14 +731,52 @@ GOOGLE_OAUTH_PROJECT_ID=tu_project_id`}
                   </p>
                 </div>
 
-                <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                  <p className="text-sm text-gray-700 mb-2 font-medium">Estructura de carpetas creada:</p>
-                  <div className="text-xs text-gray-600 font-mono space-y-1">
-                    <div>📁 Carpeta Base (configurada arriba)</div>
-                    <div className="ml-4">└─ 📁 [Mes Año] (ej: Diciembre 2025)</div>
-                    <div className="ml-8">└─ 📁 [Fecha] (ej: 2025-12-15)</div>
-                    <div className="ml-12">└─ 📁 [Nombre Query]</div>
-                    <div className="ml-16">└─ 📄 Archivo.xlsx</div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Estructura de carpetas (un nivel por línea)
+                  </label>
+                  <div className="flex flex-col gap-2">
+                    {folderStructureInput.map((level, idx) => (
+                      <div key={idx} className="flex gap-2 items-center">
+                        <input
+                          type="text"
+                          value={level}
+                          onChange={(e) => {
+                            const next = [...folderStructureInput]
+                            next[idx] = e.target.value
+                            setFolderStructureInput(next)
+                          }}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                          placeholder="{MES_NOMBRE} {AÑO}"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setFolderStructureInput(folderStructureInput.filter((_, i) => i !== idx))}
+                          className="text-xs text-red-600 hover:text-red-700"
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    ))}
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setFolderStructureInput([...folderStructureInput, ''])}
+                        className="px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50"
+                      >
+                        + Añadir nivel
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFolderStructureInput(['{MES_NOMBRE} {AÑO}', '{FECHA}', '{QUERY_NAME}'])}
+                        className="px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50"
+                      >
+                        Restaurar defecto
+                      </button>
+                    </div>
+                    <p className="mt-1 text-xs text-gray-500">
+                      Variables disponibles: {`{MES_NOMBRE}, {MES_NUM}, {AÑO}, {FECHA}, {QUERY_NAME}`}
+                    </p>
                   </div>
                 </div>
               </div>
