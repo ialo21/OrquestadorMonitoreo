@@ -3,7 +3,12 @@ node_modules
 **/node_modules
 
 # Resultados y datos generados
-backend/data/
+backend/data/databases.json
+backend/data/queries.json
+backend/data/executions.json
+backend/data/results/
+backend/data/gmail_token.pickle
+backend/data/drive_token.pickle
 *.xlsx
 *.csv
 
