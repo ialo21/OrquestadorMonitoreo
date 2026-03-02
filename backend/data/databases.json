@@ -2,7 +2,7 @@
   {
     "name": "DBIOP - Devinc",
     "db_type": "postgresql",
-    "host": "10.49.40.10",
+    "host": "10.49.40.220",
     "port": 5432,
     "database": "dbiopinc",
     "description": "Base de datos PostgreSQL Devinc (Alloy)",

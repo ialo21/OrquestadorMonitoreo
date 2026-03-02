@@ -1,5 +1,423 @@
 [
   {
+    "id": "b6eb32af-6aac-40ba-a326-614e8853e168",
+    "status": "completed",
+    "started_at": "2026-03-02T11:09:50.890680",
+    "completed_at": "2026-03-02T11:10:00.541449",
+    "results": [
+      {
+        "query_id": "579e468b-727c-48fe-9ff4-bbb98e873533",
+        "query_name": "2 ReporteReciboCaja SoloPT360",
+        "database_name": "DBIOP - Devinc",
+        "database_environment": "uat",
+        "status": "success",
+        "row_count": 4848,
+        "filename": "2 ReporteReciboCaja SoloPT360_Feb2026.xlsx",
+        "error": null,
+        "duration_seconds": 4.08,
+        "started_at": "2026-03-02T11:09:50.913334",
+        "completed_at": "2026-03-02T11:10:00.538723",
+        "drive_folder_url": "https://drive.google.com/drive/folders/1wwqfSTKftqA3pDPBRn7fM4WgA_3PmImO",
+        "drive_folder_urls": [
+          "https://drive.google.com/drive/folders/1YY-inID00y2zMKPc-ABA_cWYRx4dFLYB",
+          "https://drive.google.com/drive/folders/1wwqfSTKftqA3pDPBRn7fM4WgA_3PmImO"
+        ]
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": {
+      "year": 2026,
+      "month": 2
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "3285ec10-4603-4760-94f8-12b9082c0f57",
+    "status": "completed",
+    "started_at": "2026-03-02T11:08:45.573440",
+    "completed_at": "2026-03-02T11:08:52.984336",
+    "results": [
+      {
+        "query_id": "579e468b-727c-48fe-9ff4-bbb98e873533",
+        "query_name": "2 ReporteReciboCaja SoloPT360",
+        "database_name": "DBIOP - Devinc",
+        "database_environment": "uat",
+        "status": "success",
+        "row_count": 4848,
+        "filename": "2 ReporteReciboCaja SoloPT360_Feb2026.xlsx",
+        "error": null,
+        "duration_seconds": 3.99,
+        "started_at": "2026-03-02T11:08:45.598380",
+        "completed_at": "2026-03-02T11:08:52.980841",
+        "drive_folder_url": "https://drive.google.com/drive/folders/1-75rgVpvg6Lq77hIGUMwKWg3VtgYdKBW",
+        "drive_folder_urls": [
+          "https://drive.google.com/drive/folders/1-75rgVpvg6Lq77hIGUMwKWg3VtgYdKBW"
+        ]
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": {
+      "year": 2026,
+      "month": 2
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "07be767d-ae78-4976-8516-afde75f7ab61",
+    "status": "interrupted",
+    "started_at": "2026-03-02T11:08:06.962667",
+    "completed_at": "2026-03-02T11:08:18.517652",
+    "results": [
+      {
+        "query_id": "579e468b-727c-48fe-9ff4-bbb98e873533",
+        "query_name": "2 ReporteReciboCaja SoloPT360",
+        "database_name": "DBIOP - Devinc",
+        "database_environment": "uat",
+        "status": "success",
+        "row_count": 4848,
+        "filename": "2 ReporteReciboCaja SoloPT360_Feb2026.xlsx",
+        "error": null,
+        "duration_seconds": 4.33,
+        "started_at": "2026-03-02T11:08:06.984449",
+        "completed_at": "2026-03-02T11:08:15.782790",
+        "drive_folder_url": "https://drive.google.com/drive/folders/1-75rgVpvg6Lq77hIGUMwKWg3VtgYdKBW",
+        "drive_folder_urls": [
+          "https://drive.google.com/drive/folders/1-75rgVpvg6Lq77hIGUMwKWg3VtgYdKBW"
+        ]
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": {
+      "year": 2026,
+      "month": 2
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "9003fbef-b558-4f39-8aca-00b343a66fb5",
+    "status": "completed",
+    "started_at": "2026-03-02T11:06:29.881502",
+    "completed_at": "2026-03-02T11:06:42.015334",
+    "results": [
+      {
+        "query_id": "579e468b-727c-48fe-9ff4-bbb98e873533",
+        "query_name": "2 ReporteReciboCaja SoloPT360",
+        "database_name": "DBIOP - Devinc",
+        "database_environment": "uat",
+        "status": "success",
+        "row_count": 4848,
+        "filename": "2 ReporteReciboCaja SoloPT360_Feb2026.xlsx",
+        "error": null,
+        "duration_seconds": 5.66,
+        "started_at": "2026-03-02T11:06:29.900959",
+        "completed_at": "2026-03-02T11:06:42.008191",
+        "drive_folder_url": "https://drive.google.com/drive/folders/1TbGZlbLB_aULJ_64cWXrz3ta09p7wasu",
+        "drive_folder_urls": [
+          "https://drive.google.com/drive/folders/1a1I82Xzkw9t46uL8yadU8z1zN-rW8c8N",
+          "https://drive.google.com/drive/folders/1TbGZlbLB_aULJ_64cWXrz3ta09p7wasu"
+        ]
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": {
+      "year": 2026,
+      "month": 2
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "bfd0da3a-3af8-4a5b-afc4-c9a286bfc9c8",
+    "status": "completed",
+    "started_at": "2026-03-02T11:04:04.865534",
+    "completed_at": "2026-03-02T11:04:17.714530",
+    "results": [
+      {
+        "query_id": "579e468b-727c-48fe-9ff4-bbb98e873533",
+        "query_name": "2 ReporteReciboCaja SoloPT360",
+        "database_name": "DBIOP - Devinc",
+        "database_environment": "uat",
+        "status": "success",
+        "row_count": 4848,
+        "filename": "2 ReporteReciboCaja SoloPT360_Feb2026.xlsx",
+        "error": null,
+        "duration_seconds": 6.99,
+        "started_at": "2026-03-02T11:04:04.885853",
+        "completed_at": "2026-03-02T11:04:17.710969",
+        "drive_folder_url": "https://drive.google.com/drive/folders/1KdnoL5IqsMPGSftykjQuAk8MJl9hm3te",
+        "drive_folder_urls": [
+          "https://drive.google.com/drive/folders/1lnKH5F4hyj5ANCswCy3jvWwoBKncj0AI",
+          "https://drive.google.com/drive/folders/1KdnoL5IqsMPGSftykjQuAk8MJl9hm3te"
+        ]
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": {
+      "year": 2026,
+      "month": 2
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "bdf942c9-0da9-40bb-a4b7-430fe73601b8",
+    "status": "completed",
+    "started_at": "2026-03-02T11:00:22.427420",
+    "completed_at": "2026-03-02T11:00:34.811477",
+    "results": [
+      {
+        "query_id": "579e468b-727c-48fe-9ff4-bbb98e873533",
+        "query_name": "2 ReporteReciboCaja SoloPT360",
+        "database_name": "DBIOP - Devinc",
+        "database_environment": "uat",
+        "status": "success",
+        "row_count": 4848,
+        "filename": "2 ReporteReciboCaja SoloPT360_Feb2026.xlsx",
+        "error": null,
+        "duration_seconds": 7.88,
+        "started_at": "2026-03-02T11:00:22.452384",
+        "completed_at": "2026-03-02T11:00:34.807863",
+        "drive_folder_url": "https://drive.google.com/drive/folders/1lNs4B-IexYIsFPqNGrHDv-ChiW8zI3X7",
+        "drive_folder_urls": [
+          "https://drive.google.com/drive/folders/1_wNS0vZbHtct9zAGfbJNUq5_1S9HWLCs",
+          "https://drive.google.com/drive/folders/1lNs4B-IexYIsFPqNGrHDv-ChiW8zI3X7"
+        ]
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": {
+      "year": 2026,
+      "month": 2
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "8d3bcd36-02ef-49c8-98f8-5b05e207f019",
+    "status": "completed",
+    "started_at": "2026-03-02T10:57:30.904284",
+    "completed_at": "2026-03-02T10:57:44.680482",
+    "results": [
+      {
+        "query_id": "579e468b-727c-48fe-9ff4-bbb98e873533",
+        "query_name": "2 ReporteReciboCaja SoloPT360",
+        "database_name": "DBIOP - Devinc",
+        "database_environment": "uat",
+        "status": "success",
+        "row_count": 4848,
+        "filename": "2 ReporteReciboCaja SoloPT360_Feb2026.xlsx",
+        "error": null,
+        "duration_seconds": 9.95,
+        "started_at": "2026-03-02T10:57:30.927421",
+        "completed_at": "2026-03-02T10:57:44.677179",
+        "drive_folder_url": "https://drive.google.com/drive/folders/1jPgCHzM7zjraDOY-hXhDiH_TjvKr2USC",
+        "drive_folder_urls": [
+          "https://drive.google.com/drive/folders/1pPPkscnDf7dXViQeHA3lb3XPkaQqA5cK",
+          "https://drive.google.com/drive/folders/1jPgCHzM7zjraDOY-hXhDiH_TjvKr2USC"
+        ]
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": {
+      "year": 2026,
+      "month": 2
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "ad7b5455-4a6f-40b6-a47a-8bb50fea25d1",
+    "status": "completed",
+    "started_at": "2026-03-02T10:54:15.101824",
+    "completed_at": "2026-03-02T10:54:25.102259",
+    "results": [
+      {
+        "query_id": "579e468b-727c-48fe-9ff4-bbb98e873533",
+        "query_name": "2 ReporteReciboCaja SoloPT360",
+        "database_name": "DBIOP - Devinc",
+        "database_environment": "uat",
+        "status": "success",
+        "row_count": 4848,
+        "filename": "2 ReporteReciboCaja SoloPT360_Feb2026.xlsx",
+        "error": null,
+        "duration_seconds": 5.53,
+        "started_at": "2026-03-02T10:54:15.125290",
+        "completed_at": "2026-03-02T10:54:25.098846",
+        "drive_folder_url": "https://drive.google.com/drive/folders/1D3dYE1BdAHq2CX3Z--fmxTEOJi1wAGFT",
+        "drive_folder_urls": [
+          "https://drive.google.com/drive/folders/1_wNS0vZbHtct9zAGfbJNUq5_1S9HWLCs",
+          "https://drive.google.com/drive/folders/1D3dYE1BdAHq2CX3Z--fmxTEOJi1wAGFT"
+        ]
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": {
+      "year": 2026,
+      "month": 2
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "fe3dc3c8-f1ba-429a-acc3-bdb26acf7ef1",
+    "status": "completed",
+    "started_at": "2026-03-02T10:51:19.886518",
+    "completed_at": "2026-03-02T10:51:30.330090",
+    "results": [
+      {
+        "query_id": "579e468b-727c-48fe-9ff4-bbb98e873533",
+        "query_name": "2 ReporteReciboCaja SoloPT360",
+        "database_name": "DBIOP - Devinc",
+        "database_environment": "uat",
+        "status": "success",
+        "row_count": 4848,
+        "filename": "2 ReporteReciboCaja SoloPT360_Feb2026.xlsx",
+        "error": null,
+        "duration_seconds": 4.17,
+        "started_at": "2026-03-02T10:51:19.906851",
+        "completed_at": "2026-03-02T10:51:30.327333",
+        "drive_folder_url": "https://drive.google.com/drive/folders/1jPgCHzM7zjraDOY-hXhDiH_TjvKr2USC",
+        "drive_folder_urls": [
+          "https://drive.google.com/drive/folders/1pPPkscnDf7dXViQeHA3lb3XPkaQqA5cK",
+          "https://drive.google.com/drive/folders/1jPgCHzM7zjraDOY-hXhDiH_TjvKr2USC"
+        ]
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": {
+      "year": 2026,
+      "month": 2
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "0d8475ad-76a4-4c50-a5b7-4492f08d3763",
+    "status": "completed",
+    "started_at": "2026-03-02T10:49:21.245069",
+    "completed_at": "2026-03-02T10:49:41.618469",
+    "results": [
+      {
+        "query_id": "579e468b-727c-48fe-9ff4-bbb98e873533",
+        "query_name": "2 ReporteReciboCaja SoloPT360",
+        "database_name": "DBIOP - Devinc",
+        "database_environment": "uat",
+        "status": "success",
+        "row_count": 4848,
+        "filename": "2 ReporteReciboCaja SoloPT360_Feb2026.xlsx",
+        "error": null,
+        "duration_seconds": 13.69,
+        "started_at": "2026-03-02T10:49:22.192412",
+        "completed_at": "2026-03-02T10:49:41.611239",
+        "drive_folder_url": "https://drive.google.com/drive/folders/1nnlnx1Bz7SJN8B5krq79l46aOIMJQRP0",
+        "drive_folder_urls": [
+          "https://drive.google.com/drive/folders/1_wNS0vZbHtct9zAGfbJNUq5_1S9HWLCs",
+          "https://drive.google.com/drive/folders/1nnlnx1Bz7SJN8B5krq79l46aOIMJQRP0"
+        ]
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": {
+      "year": 2026,
+      "month": 2
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "00ec23a2-a2a1-4d8b-adc0-0b0e3cd5fbf0",
+    "status": "failed",
+    "started_at": "2026-03-02T10:46:34.911439",
+    "completed_at": "2026-03-02T10:46:50.920907",
+    "results": [
+      {
+        "query_id": "579e468b-727c-48fe-9ff4-bbb98e873533",
+        "query_name": "2 ReporteReciboCaja SoloPT360",
+        "database_name": "DBIOP - Devinc",
+        "database_environment": "uat",
+        "status": "error",
+        "row_count": 0,
+        "filename": "",
+        "error": "connection to server at \"10.49.40.10\", port 5432 failed: timeout expired\n",
+        "duration_seconds": 15.01,
+        "started_at": "2026-03-02T10:46:35.898497",
+        "completed_at": "2026-03-02T10:46:50.915441",
+        "drive_folder_url": null,
+        "drive_folder_urls": null
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": {
+      "year": 2026,
+      "month": 2
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "9950d1c8-786a-46c2-8942-d21de2251b1b",
+    "status": "failed",
+    "started_at": "2026-03-02T10:45:48.506011",
+    "completed_at": "2026-03-02T10:46:00.495624",
+    "results": [
+      {
+        "query_id": "579e468b-727c-48fe-9ff4-bbb98e873533",
+        "query_name": "2 ReporteReciboCaja SoloPT360",
+        "database_name": "DBIOP",
+        "database_environment": "prod",
+        "status": "error",
+        "row_count": 0,
+        "filename": "",
+        "error": "connection to server at \"10.49.40.16\", port 5432 failed: FATAL:  password authentication failed for user \"ext.carper\"\nconnection to server at \"10.49.40.16\", port 5432 failed: FATAL:  password authentication failed for user \"ext.carper\"\n",
+        "duration_seconds": 1.56,
+        "started_at": "2026-03-02T10:45:58.893486",
+        "completed_at": "2026-03-02T10:46:00.457718",
+        "drive_folder_url": null,
+        "drive_folder_urls": null
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": {
+      "year": 2026,
+      "month": 2
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "38abeab0-be07-4a11-a537-aa8e38070cae",
+    "status": "interrupted",
+    "started_at": "2026-03-02T10:43:55.707092",
+    "completed_at": "2026-03-02T10:44:23.974522",
+    "results": [
+      {
+        "query_id": "579e468b-727c-48fe-9ff4-bbb98e873533",
+        "query_name": "2 ReporteReciboCaja SoloPT360",
+        "database_name": "DBIOP",
+        "database_environment": "prod",
+        "status": "interrupted",
+        "row_count": 0,
+        "filename": "",
+        "error": null,
+        "duration_seconds": 0.0,
+        "started_at": null,
+        "completed_at": null,
+        "drive_folder_url": null,
+        "drive_folder_urls": null
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 0,
+    "period": {
+      "year": 2026,
+      "month": 2
+    },
+    "use_dynamic_dates": true
+  },
+  {
     "id": "dc5fb063-8f3a-4dd4-ae3a-e948c1692b95",
     "status": "completed",
     "started_at": "2026-03-02T09:41:58.251592",

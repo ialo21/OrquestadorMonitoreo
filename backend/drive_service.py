@@ -19,22 +19,28 @@ def _get_or_create_folder(service, folder_name: str, parent_id: str) -> tuple[st
         tuple[str, str]: (ID de la carpeta, URL de la carpeta)
     """
     try:
+        print(f"[DRIVE DEBUG] Buscando carpeta '{folder_name}' en parent {parent_id}")
         # Buscar carpeta existente
         query = f"name='{folder_name}' and '{parent_id}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false"
         results = service.files().list(
             q=query,
             spaces='drive',
             fields='files(id, name, webViewLink)',
-            pageSize=1
+            pageSize=1,
+            includeItemsFromAllDrives=True,
+            supportsAllDrives=True,
         ).execute()
         
         items = results.get('files', [])
+        print(f"[DRIVE DEBUG] Encontradas: {len(items)}")
         if items:
             folder_id = items[0]['id']
             folder_url = items[0].get('webViewLink', f'https://drive.google.com/drive/folders/{folder_id}')
+            print(f"[DRIVE DEBUG] Reutilizando carpeta {folder_name} -> {folder_id}")
             return folder_id, folder_url
         
         # Crear carpeta si no existe
+        print(f"[DRIVE DEBUG] No existe, creando '{folder_name}' bajo {parent_id}")
         file_metadata = {
             'name': folder_name,
             'mimeType': 'application/vnd.google-apps.folder',
@@ -42,14 +48,17 @@ def _get_or_create_folder(service, folder_name: str, parent_id: str) -> tuple[st
         }
         folder = service.files().create(
             body=file_metadata,
-            fields='id, webViewLink'
+            fields='id, webViewLink',
+            supportsAllDrives=True,
         ).execute()
         
         folder_id = folder.get('id')
         folder_url = folder.get('webViewLink', f'https://drive.google.com/drive/folders/{folder_id}')
+        print(f"[DRIVE DEBUG] Creada carpeta {folder_name} -> {folder_id}")
         return folder_id, folder_url
         
     except Exception as e:
+        print(f"[DRIVE ERROR] {folder_name} en {parent_id}: {e}")
         raise Exception(f"Error al crear/buscar carpeta '{folder_name}': {str(e)}")
 
 
@@ -81,6 +90,55 @@ def run_drive_authorization(config: DriveConfig) -> tuple[bool, str]:
         return True, "Token de Drive guardado exitosamente"
     except Exception as e:
         return False, f"Error durante la autorización de Drive: {str(e)}"
+
+
+def share_folder_with_emails(
+    service,
+    folder_id: str,
+    emails: list[str],
+    role: str = "reader"
+) -> tuple[bool, str]:
+    """
+    Comparte una carpeta de Drive con una lista de emails.
+    
+    Args:
+        service: Servicio de Google Drive autenticado
+        folder_id: ID de la carpeta a compartir
+        emails: Lista de correos electrónicos
+        role: Rol de acceso ('reader', 'writer', 'commenter')
+    
+    Returns:
+        tuple[bool, str]: (éxito, mensaje)
+    """
+    if not emails:
+        return True, "No hay emails para compartir"
+    
+    try:
+        shared_count = 0
+        for email in emails:
+            if not email or not email.strip():
+                continue
+            
+            try:
+                permission = {
+                    'type': 'user',
+                    'role': role,
+                    'emailAddress': email.strip()
+                }
+                service.permissions().create(
+                    fileId=folder_id,
+                    body=permission,
+                    sendNotificationEmail=False,
+                    supportsAllDrives=True,
+                ).execute()
+                shared_count += 1
+                print(f"[DRIVE DEBUG] Compartida carpeta con {email.strip()} (role: {role})")
+            except Exception as e:
+                print(f"[DRIVE ERROR] No se pudo compartir con {email.strip()}: {e}")
+        
+        return True, f"Carpeta compartida con {shared_count} usuario(s)"
+    except Exception as e:
+        return False, f"Error al compartir carpeta: {str(e)}"
 
 
 def upload_to_drive(

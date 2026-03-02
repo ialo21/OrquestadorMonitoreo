@@ -23,7 +23,7 @@ from models import (
 )
 from database_connector import get_connection
 from email_service import send_start_email, send_end_email
-from drive_service import upload_to_drive
+from drive_service import upload_to_drive, share_folder_with_emails
 
 
 DATA_DIR = Path(__file__).parent / "data"
@@ -538,16 +538,25 @@ def run_execution(
             drive_folder_url = None
             drive_folder_urls = None
             drive_config = _load_drive_config()
+            print(f"[DRIVE DEBUG] Drive enabled: {drive_config.enabled}")
             if drive_config.enabled:
                 try:
                     file_path = RESULTS_DIR / execution_id / filename
+                    print(f"[DRIVE DEBUG] Intentando subir: {file_path}")
+                    print(f"[DRIVE DEBUG] Base folder ID: {drive_config.base_folder_id}")
+                    print(f"[DRIVE DEBUG] Folder structure: {drive_config.folder_structure}")
                     success, result = upload_to_drive(drive_config, file_path, query.name, execution_date, period)
+                    print(f"[DRIVE DEBUG] Upload success: {success}, result type: {type(result)}")
                     if success and isinstance(result, dict) and "folder_urls" in result:
                         drive_folder_urls = result["folder_urls"]
-                        # Usar la última carpeta de la estructura (donde se subió el archivo)
                         drive_folder_url = drive_folder_urls[-1] if drive_folder_urls else None
+                        print(f"[DRIVE DEBUG] Folder URLs: {drive_folder_urls}")
+                    else:
+                        print(f"[DRIVE DEBUG] Result: {result}")
                 except Exception as e:
-                    print(f"Error al subir a Drive: {e}")
+                    print(f"[DRIVE ERROR] Error al subir a Drive: {e}")
+                    import traceback
+                    traceback.print_exc()
             
             _finish_query(
                 idx, "success",
@@ -621,6 +630,33 @@ def run_execution(
                 if result.get("drive_folder_urls"):
                     drive_folder_urls = result["drive_folder_urls"]
                     break  # Usar las URLs de cualquier query exitosa
+            
+            # Compartir carpeta Drive con destinatarios del email si hay Drive habilitado
+            drive_config = _load_drive_config()
+            if drive_config.enabled and drive_folder_urls:
+                try:
+                    # Determinar qué carpeta compartir según drive_folder_level
+                    folder_level = email_config.drive_folder_level
+                    try:
+                        folder_url_to_share = drive_folder_urls[folder_level]
+                    except (IndexError, TypeError):
+                        folder_url_to_share = drive_folder_urls[-1] if drive_folder_urls else None
+                    
+                    if folder_url_to_share:
+                        # Extraer folder_id de la URL
+                        folder_id = folder_url_to_share.split('/')[-1]
+                        
+                        # Recopilar todos los emails (to + cc)
+                        all_emails = list(email_config.end_email_to) + list(email_config.end_email_cc)
+                        
+                        if all_emails:
+                            # Obtener servicio de Drive para compartir
+                            from drive_service import _get_drive_service
+                            service = _get_drive_service(drive_config)
+                            success, msg = share_folder_with_emails(service, folder_id, all_emails, role="reader")
+                            print(f"[DRIVE DEBUG] Compartir carpeta: {msg}")
+                except Exception as e:
+                    print(f"[DRIVE ERROR] Error al compartir carpeta con destinatarios: {e}")
             
             send_end_email(
                 email_config,
