@@ -2,7 +2,7 @@
 setlocal
 set "BASEDIR=%~dp0"
 
-echo Deteniendo Orquestador de Reportes BBDD...
+echo Deteniendo Orquestador (silencioso)...
 
 REM Backend por PID
 if exist "%BASEDIR%backend.pid" (
