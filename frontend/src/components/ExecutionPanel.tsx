@@ -443,6 +443,16 @@ function ResultRow({
           <p className="text-xs text-gray-500 mt-0.5">
             {result.row_count.toLocaleString()} filas &middot;{' '}
             {formatDuration(result.duration_seconds)}
+            {result.started_at && (
+              <>
+                {' '}&middot; Inicio: {formatDateWithSeconds(result.started_at)}
+              </>
+            )}
+            {result.completed_at && (
+              <>
+                {' '}&middot; Fin: {formatDateWithSeconds(result.completed_at)}
+              </>
+            )}
           </p>
         )}
 

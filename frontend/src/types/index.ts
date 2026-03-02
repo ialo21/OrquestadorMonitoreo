@@ -63,6 +63,10 @@ export interface QueryResult {
   filename: string
   error: string | null
   duration_seconds: number
+  started_at?: string | null
+  completed_at?: string | null
+  drive_folder_url?: string | null
+  drive_folder_urls?: string[] | null
 }
 
 export interface Execution {
@@ -123,6 +127,9 @@ export interface EmailConfig {
   end_email_cc: string[]
   end_email_subject: string
   end_email_body: string
+  
+  // Configuración de carpeta Drive para incluir en emails
+  drive_folder_level: number
 }
 
 // ── Configuración de Google Drive ───────────────────────────────────────────

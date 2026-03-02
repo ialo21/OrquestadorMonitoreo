@@ -93,6 +93,10 @@ class QueryResult(BaseModel):
     filename: str = ""
     error: Optional[str] = None
     duration_seconds: float = 0.0
+    started_at: Optional[str] = None
+    completed_at: Optional[str] = None
+    drive_folder_url: Optional[str] = None  # URL de la carpeta Drive donde se subió el archivo
+    drive_folder_urls: Optional[list[str]] = None  # Lista de URLs de todas las carpetas de la estructura
 
 
 class Execution(BaseModel):
@@ -150,6 +154,11 @@ class EmailConfig(BaseModel):
     end_email_cc: list[str] = []
     end_email_subject: str = "Finalización de Ejecución de Reportes"
     end_email_body: str = ""
+    
+    # Configuración de carpeta Drive para incluir en emails
+    # Índice (0-based) del nivel de carpeta de la estructura de Drive a usar en variable {CARPETA_DRIVE}
+    # Ejemplo: 0 = primera carpeta, 1 = segunda carpeta, -1 = última carpeta (donde se sube el archivo)
+    drive_folder_level: int = -1  # Por defecto usa la última carpeta
 
 
 # ── Configuración de Google Drive ───────────────────────────────────────────

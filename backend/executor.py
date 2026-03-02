@@ -85,9 +85,49 @@ def _load_email_config() -> EmailConfig:
 
 def _load_drive_config() -> DriveConfig:
     """Carga la configuración de Google Drive."""
+    from dotenv import dotenv_values
+    from pathlib import Path as DotenvPath
+    
     if DRIVE_CONFIG_FILE.exists():
         with open(DRIVE_CONFIG_FILE, "r", encoding="utf-8") as f:
             data = json.load(f)
+            
+            # Migración automática: si tiene estructura antigua, actualizar
+            if "credentials_file" in data and "oauth_credentials" not in data:
+                # Estructura antigua detectada, migrar a nueva
+                base = DriveConfig()
+                data["oauth_credentials"] = base.oauth_credentials
+                data["folder_structure"] = base.folder_structure
+                # Remover campo obsoleto
+                data.pop("credentials_file", None)
+                
+                # Guardar migración
+                with open(DRIVE_CONFIG_FILE, "w", encoding="utf-8") as fw:
+                    json.dump(data, fw, ensure_ascii=False, indent=2)
+            
+            # Inyectar credenciales OAuth desde .env (igual que main.py)
+            env_path = DotenvPath(__file__).parent.parent / ".env"
+            if env_path.exists():
+                env_vars = dotenv_values(env_path)
+                env_vars = {k.lstrip("\ufeff"): v for k, v in env_vars.items()}
+                client_id = env_vars.get("GOOGLE_OAUTH_CLIENT_ID", "")
+                client_secret = env_vars.get("GOOGLE_OAUTH_CLIENT_SECRET", "")
+                project_id = env_vars.get("GOOGLE_OAUTH_PROJECT_ID", "")
+                
+                if client_id and client_secret:
+                    oauth_env = {
+                        "client_id": client_id.strip(),
+                        "project_id": project_id.strip() if project_id else "",
+                        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                        "token_uri": "https://oauth2.googleapis.com/token",
+                        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+                        "client_secret": client_secret.strip(),
+                        "redirect_uris": ["http://localhost"],
+                    }
+                    if "oauth_credentials" not in data:
+                        data["oauth_credentials"] = {}
+                    data["oauth_credentials"]["installed"] = oauth_env
+            
             return DriveConfig(**data)
     return DriveConfig()
 
@@ -386,6 +426,7 @@ def run_execution(
         """Helper thread-safe para marcar una query como terminada."""
         with results_lock:
             results[idx]["status"] = status
+            results[idx]["completed_at"] = datetime.now().isoformat()
             for key, value in kwargs.items():
                 results[idx][key] = value
             if status == "error":
@@ -402,6 +443,7 @@ def run_execution(
         """Helper thread-safe para marcar una query como en ejecución."""
         with results_lock:
             results[idx]["status"] = "running"
+            results[idx]["started_at"] = datetime.now().isoformat()
             _update_execution(execution_id, {"results": copy.deepcopy(results)})
 
     def _execute_single(idx: int, query: QueryMeta):
@@ -493,11 +535,17 @@ def run_execution(
                 filename = save_dataframe_to_excel(sheets_data, execution_id, query.name, period=period)
 
             # Subir a Google Drive si está configurado
+            drive_folder_url = None
+            drive_folder_urls = None
             drive_config = _load_drive_config()
             if drive_config.enabled:
                 try:
                     file_path = RESULTS_DIR / execution_id / filename
-                    upload_to_drive(drive_config, file_path, query.name, execution_date, period)
+                    success, result = upload_to_drive(drive_config, file_path, query.name, execution_date, period)
+                    if success and isinstance(result, dict) and "folder_urls" in result:
+                        drive_folder_urls = result["folder_urls"]
+                        # Usar la última carpeta de la estructura (donde se subió el archivo)
+                        drive_folder_url = drive_folder_urls[-1] if drive_folder_urls else None
                 except Exception as e:
                     print(f"Error al subir a Drive: {e}")
             
@@ -506,6 +554,8 @@ def run_execution(
                 row_count=total_rows,
                 filename=filename,
                 duration_seconds=round(duration, 2),
+                drive_folder_url=drive_folder_url,
+                drive_folder_urls=drive_folder_urls,
             )
 
         except Exception as e:
@@ -565,6 +615,13 @@ def run_execution(
     # Enviar email de fin si está configurado
     if email_config.enabled and email_config.send_end_email:
         try:
+            # Obtener URLs de carpetas Drive de cualquier resultado exitoso
+            drive_folder_urls = None
+            for result in results:
+                if result.get("drive_folder_urls"):
+                    drive_folder_urls = result["drive_folder_urls"]
+                    break  # Usar las URLs de cualquier query exitosa
+            
             send_end_email(
                 email_config,
                 execution_date,
@@ -572,7 +629,8 @@ def run_execution(
                 final_status,
                 total,
                 completed_count[0],
-                period
+                period,
+                drive_folder_urls
             )
         except Exception as e:
             print(f"Error al enviar email de fin: {e}")

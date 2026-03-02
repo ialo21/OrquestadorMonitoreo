@@ -10,13 +10,13 @@ from models import DriveConfig, PeriodInput
 TOKEN_PATH = Path(__file__).parent / "data" / "drive_token.pickle"
 
 
-def _get_or_create_folder(service, folder_name: str, parent_id: str) -> Optional[str]:
+def _get_or_create_folder(service, folder_name: str, parent_id: str) -> tuple[str, str]:
     """
     Busca una carpeta por nombre dentro de un padre.
     Si no existe, la crea.
     
     Returns:
-        str: ID de la carpeta encontrada o creada
+        tuple[str, str]: (ID de la carpeta, URL de la carpeta)
     """
     try:
         # Buscar carpeta existente
@@ -24,13 +24,15 @@ def _get_or_create_folder(service, folder_name: str, parent_id: str) -> Optional
         results = service.files().list(
             q=query,
             spaces='drive',
-            fields='files(id, name)',
+            fields='files(id, name, webViewLink)',
             pageSize=1
         ).execute()
         
         items = results.get('files', [])
         if items:
-            return items[0]['id']
+            folder_id = items[0]['id']
+            folder_url = items[0].get('webViewLink', f'https://drive.google.com/drive/folders/{folder_id}')
+            return folder_id, folder_url
         
         # Crear carpeta si no existe
         file_metadata = {
@@ -40,10 +42,12 @@ def _get_or_create_folder(service, folder_name: str, parent_id: str) -> Optional
         }
         folder = service.files().create(
             body=file_metadata,
-            fields='id'
+            fields='id, webViewLink'
         ).execute()
         
-        return folder.get('id')
+        folder_id = folder.get('id')
+        folder_url = folder.get('webViewLink', f'https://drive.google.com/drive/folders/{folder_id}')
+        return folder_id, folder_url
         
     except Exception as e:
         raise Exception(f"Error al crear/buscar carpeta '{folder_name}': {str(e)}")
@@ -174,6 +178,7 @@ def upload_to_drive(
         
         # Crear estructura de carpetas personalizable
         current_parent_id = config.base_folder_id
+        folder_urls = []  # URLs de todas las carpetas creadas en orden
         
         for folder_template in config.folder_structure:
             # Reemplazar variables en el template
@@ -182,7 +187,8 @@ def upload_to_drive(
                 folder_name = folder_name.replace(var, value)
             
             # Crear o encontrar la carpeta
-            current_parent_id = _get_or_create_folder(service, folder_name, current_parent_id)
+            current_parent_id, folder_url = _get_or_create_folder(service, folder_name, current_parent_id)
+            folder_urls.append(folder_url)
         
         # La última carpeta creada es donde se sube el archivo
         query_folder_id = current_parent_id
@@ -205,7 +211,12 @@ def upload_to_drive(
         ).execute()
         
         file_url = file.get('webViewLink', '')
-        return True, f"Archivo subido a Drive: {file_url}"
+        # Retornar éxito y un diccionario con URLs
+        result = {
+            "file_url": file_url,
+            "folder_urls": folder_urls,  # Lista de URLs de carpetas en orden de estructura
+        }
+        return True, result
         
     except Exception as e:
         return False, f"Error al subir a Drive: {str(e)}"

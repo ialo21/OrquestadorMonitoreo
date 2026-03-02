@@ -1,0 +1,619 @@
+[
+  {
+    "id": "dc5fb063-8f3a-4dd4-ae3a-e948c1692b95",
+    "status": "completed",
+    "started_at": "2026-03-02T09:41:58.251592",
+    "completed_at": "2026-03-02T09:42:03.056416",
+    "results": [
+      {
+        "query_id": "579e468b-727c-48fe-9ff4-bbb98e873533",
+        "query_name": "2 ReporteReciboCaja SoloPT360",
+        "database_name": "DBIOP",
+        "database_environment": "prod",
+        "status": "success",
+        "row_count": 4848,
+        "filename": "2 ReporteReciboCaja SoloPT360_Feb2026.xlsx",
+        "error": null,
+        "duration_seconds": 1.96
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": {
+      "year": 2026,
+      "month": 2
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "be3bb986-ef3d-4d2b-a8e2-87bf820e3842",
+    "status": "completed",
+    "started_at": "2026-03-02T09:36:01.329099",
+    "completed_at": "2026-03-02T09:36:06.221693",
+    "results": [
+      {
+        "query_id": "579e468b-727c-48fe-9ff4-bbb98e873533",
+        "query_name": "2 ReporteReciboCaja SoloPT360",
+        "database_name": "DBIOP",
+        "database_environment": "prod",
+        "status": "success",
+        "row_count": 4848,
+        "filename": "2 ReporteReciboCaja SoloPT360_Feb2026.xlsx",
+        "error": null,
+        "duration_seconds": 1.98
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": {
+      "year": 2026,
+      "month": 2
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "e530adaa-d036-4e49-ba00-1b54e025f9ed",
+    "status": "completed",
+    "started_at": "2026-03-02T09:08:25.989891",
+    "completed_at": "2026-03-02T09:08:30.640167",
+    "results": [
+      {
+        "query_id": "579e468b-727c-48fe-9ff4-bbb98e873533",
+        "query_name": "2 ReporteReciboCaja SoloPT360",
+        "database_name": "DBIOP",
+        "database_environment": "prod",
+        "status": "success",
+        "row_count": 4848,
+        "filename": "2 ReporteReciboCaja SoloPT360_Feb2026.xlsx",
+        "error": null,
+        "duration_seconds": 2.3
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": {
+      "year": 2026,
+      "month": 2
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "81a72e9e-893b-484e-8aa1-e712220dff7a",
+    "status": "failed",
+    "started_at": "2026-03-02T09:01:43.359374",
+    "completed_at": "2026-03-02T09:01:45.030656",
+    "results": [
+      {
+        "query_id": "04cd5789-cc5b-4c6b-946f-f6bd3cd9869f",
+        "query_name": "2 ReporteReciboCaja SoloPT360",
+        "database_name": "SQL Server - Interseg",
+        "database_environment": "prod",
+        "status": "error",
+        "row_count": 0,
+        "filename": "",
+        "error": "Execution failed on sql '/*RECIBOS SOLO PT 360*/\n-- SOLO EJECUTAR NO REQUIERE CONFIGURACION DE PARAMETROS\n-- Nombre archivo ejemplo: LibroReciboCajaFeb2020_SoloPT360.xlsx\n\nselect rc.id_recibo_caja, rc.numero_recibo, rc.monto_recibo_cantidad, rc.monto_saldo_cantidad, \n       TO_CHAR(rc.fecha_recibo, 'dd-mm-yyyy') as fecha_Recibo,       \n       cp.numero_poliza,\n       dm.numero_certificado,\n       TO_CHAR(dm.fecha_inicio_cobertura, 'dd-mm-yyyy') as fecha_inicio_cobertura,\n       TO_CHAR(dm.fecha_fin_cobertura, 'dd-mm-yyyy') as fecha_fin_cobertura,\n       ROW_NUMBER() OVER (PARTITION BY dm.id_cuenta_poliza ORDER BY rc.id_recibo_caja) NRO\nfrom   SAMP.PLANILLA P\n       inner join samp.detalle_movimiento dm on DM.ID_PLANILLA = P.ID_PLANILLA\n       INNER JOIN samp.recibo_caja rc ON RC.ID_DETALLE_MOVIMIENTO = DM.ID_DETALLE_MOVIMIENTO\n       inner join samp.cuenta_poliza cp on rc.id_cuenta_poliza = cp.id \nwhere  P.ORIGEN_RECAUDACION = 31 --> no tocar\n       AND dm.id_cuenta_poliza = 2452456 --> no tocar\n       and rc.estado = 1\n       and rc.monto_saldo_cantidad>0\n       ;': ('42000', \"[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]'TO_CHAR' is not a recognized built-in function name. (195) (SQLExecDirectW)\")",
+        "duration_seconds": 1.43
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": {
+      "year": 2026,
+      "month": 2
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "ad7d595a-f927-4450-8f7b-13e88fc07165",
+    "status": "partial",
+    "started_at": "2026-03-01T13:17:08.188082",
+    "completed_at": "2026-03-01T13:20:31.332117",
+    "results": [
+      {
+        "query_id": "0dd14f11-cce1-4d33-b49b-4291ed94c52e",
+        "query_name": "1 ReporteReciboCaja SinPT360",
+        "database_name": "DBIOP",
+        "database_environment": "prod",
+        "status": "cancelled",
+        "row_count": 0,
+        "filename": "",
+        "error": null,
+        "duration_seconds": 111.11
+      },
+      {
+        "query_id": "04cd5789-cc5b-4c6b-946f-f6bd3cd9869f",
+        "query_name": "2 ReporteReciboCaja SoloPT360",
+        "database_name": "SQL Server - Interseg",
+        "database_environment": "prod",
+        "status": "error",
+        "row_count": 0,
+        "filename": "",
+        "error": "Execution failed on sql '/*RECIBOS SOLO PT 360*/\n-- SOLO EJECUTAR NO REQUIERE CONFIGURACION DE PARAMETROS\n-- Nombre archivo ejemplo: LibroReciboCajaFeb2020_SoloPT360.xlsx\n\nselect rc.id_recibo_caja, rc.numero_recibo, rc.monto_recibo_cantidad, rc.monto_saldo_cantidad, \n       TO_CHAR(rc.fecha_recibo, 'dd-mm-yyyy') as fecha_Recibo,       \n       cp.numero_poliza,\n       dm.numero_certificado,\n       TO_CHAR(dm.fecha_inicio_cobertura, 'dd-mm-yyyy') as fecha_inicio_cobertura,\n       TO_CHAR(dm.fecha_fin_cobertura, 'dd-mm-yyyy') as fecha_fin_cobertura,\n       ROW_NUMBER() OVER (PARTITION BY dm.id_cuenta_poliza ORDER BY rc.id_recibo_caja) NRO\nfrom   SAMP.PLANILLA P\n       inner join samp.detalle_movimiento dm on DM.ID_PLANILLA = P.ID_PLANILLA\n       INNER JOIN samp.recibo_caja rc ON RC.ID_DETALLE_MOVIMIENTO = DM.ID_DETALLE_MOVIMIENTO\n       inner join samp.cuenta_poliza cp on rc.id_cuenta_poliza = cp.id \nwhere  P.ORIGEN_RECAUDACION = 31 --> no tocar\n       AND dm.id_cuenta_poliza = 2452456 --> no tocar\n       and rc.estado = 1\n       and rc.monto_saldo_cantidad>0\n       ;': ('42000', \"[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]'TO_CHAR' is not a recognized built-in function name. (195) (SQLExecDirectW)\")",
+        "duration_seconds": 5.5
+      },
+      {
+        "query_id": "b61272de-fe74-4c94-902d-f034dcd6df51",
+        "query_name": "Reporte Históricos Tarjetas",
+        "database_name": "DBIOP",
+        "database_environment": "prod",
+        "status": "success",
+        "row_count": 90241,
+        "filename": "Reporte Históricos Tarjetas_Feb2026.xlsx",
+        "error": null,
+        "duration_seconds": 11.31
+      },
+      {
+        "query_id": "d6fa2253-2983-423a-8cc8-bd4858adf619",
+        "query_name": "Reporte FTP",
+        "database_name": "DBIOP",
+        "database_environment": "prod",
+        "status": "success",
+        "row_count": 494700,
+        "filename": "Reporte FTP_Feb2026.xlsx",
+        "error": null,
+        "duration_seconds": 49.34
+      },
+      {
+        "query_id": "5ba4733d-a9ec-4d48-a28f-953c89220158",
+        "query_name": "Reporte Facturas No Pago",
+        "database_name": "DBIOP",
+        "database_environment": "prod",
+        "status": "cancelled",
+        "row_count": 0,
+        "filename": "",
+        "error": null,
+        "duration_seconds": 136.82
+      },
+      {
+        "query_id": "7befc99a-2682-45dd-a252-94b82915433f",
+        "query_name": "Reporte Resumen Registro Ventas",
+        "database_name": "SQL Server - Interseg",
+        "database_environment": "prod",
+        "status": "success",
+        "row_count": 0,
+        "filename": "Reporte Resumen Registro Ventas_Feb2026.xlsx",
+        "error": null,
+        "duration_seconds": 5.49
+      },
+      {
+        "query_id": "a0cd1f3e-4dad-422b-8011-ec9bce88d5a7",
+        "query_name": "Reporte Históricos Tarjetas",
+        "database_name": "DBIOP",
+        "database_environment": "prod",
+        "status": "success",
+        "row_count": 84480,
+        "filename": "Reporte Históricos Tarjetas_Feb2026.xlsx",
+        "error": null,
+        "duration_seconds": 11.29
+      }
+    ],
+    "total_queries": 7,
+    "completed_queries": 7,
+    "period": {
+      "year": 2026,
+      "month": 2
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "05544472-9a5a-4993-a535-e7ee3db2786f",
+    "status": "cancelled",
+    "started_at": "2026-02-18T12:16:04.523766",
+    "completed_at": "2026-02-18T15:42:50.363507",
+    "results": [
+      {
+        "query_id": "5ba4733d-a9ec-4d48-a28f-953c89220158",
+        "query_name": "Reporte Facturas No Pago",
+        "database_name": "Alloy - DBIOP - UAT",
+        "database_environment": "uat",
+        "status": "cancelled",
+        "row_count": 0,
+        "filename": "",
+        "error": null,
+        "duration_seconds": 12405.8
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": {
+      "year": 2026,
+      "month": 1
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "d664fea6-29ce-4be1-839d-2e93bbbd6eeb",
+    "status": "failed",
+    "started_at": "2026-02-18T09:39:05.007287",
+    "completed_at": "2026-02-18T09:39:05.013975",
+    "results": [
+      {
+        "query_id": "276ca47f-8d75-4405-8f98-74b9c34150bc",
+        "query_name": "1 ReporteReciboCaja SinPT360",
+        "database_name": "Alloy - DBIOP - UAT",
+        "database_environment": "uat",
+        "status": "error",
+        "row_count": 0,
+        "filename": "",
+        "error": "Archivo SQL no encontrado",
+        "duration_seconds": 0.0
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": {
+      "year": 2026,
+      "month": 1
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "b60fa567-ae84-4e5d-9398-fb94b8d6bdf2",
+    "status": "failed",
+    "started_at": "2026-02-18T09:35:08.531414",
+    "completed_at": "2026-02-18T09:59:09.148290",
+    "results": [
+      {
+        "query_id": "eaff35d8-10c2-46ac-95bb-a3b58308a33d",
+        "query_name": "Reporte Facturas No Pago",
+        "database_name": "Alloy - DBIOP - UAT",
+        "database_environment": "uat",
+        "status": "error",
+        "row_count": 0,
+        "filename": "",
+        "error": "Execution failed on sql: select    c.id_comprobante\n                , cc.numero_poliza\n                , cc.numero_certificado\n                , cc.prima_cantidad\n                , sum(case when vw.detalle = 'DetPriNeta' then vw.valor\n                        when vw.detalle = 'DetIGV' then 0\n                        when vw.detalle = 'DetGasEmis' then 0 end )     DetPriNeta\n\n                , sum(case when vw.detalle = 'DetPriNeta' then 0\n                        when vw.detalle = 'DetIGV' then vw.valor\n                        when vw.detalle = 'DetGasEmis' then 0 end )     DetIGV\n\n                , sum(case when vw.detalle = 'DetPriNeta' then 0\n                        when vw.detalle = 'DetIGV' then 0\n                        when vw.detalle = 'DetGasEmis' then vw.valor end )     DetGasEmis\n\n                , cc.estado_cargo_colectivo\n                , cc.estado_openitem\n                , cc.estado_certificado\n                , cc.id_open_item\n                from samp.detalle_movimiento dm\n                  inner join samp.abo_car_dev_col acdc on dm.id_abono = acdc.id_abono and acdc.estado = 1\n                  inner join samp.cargo_colectivo cc on acdc.id_car_col = cc.id_cargo_colectivo\n                  inner join samp.comprobante c on cc.id_comprobante_asociado = c.id_comprobante\n                  inner join samp.planilla p on dm.id_planilla = p.id_planilla\n                  left outer join interseguro.view_openitemdetails_samp vw on cc.id_open_item = vw.OPENITEMID\n                  where dm.tipo_movimiento = 1\n                  and dm.tipo_detalle = 17\n                  and dm.fecha_aplicacion >= to_date('01/01/2026','dd/mm/yyyy')\n                  and dm.fecha_aplicacion < to_date('01/02/2026','dd/mm/yyyy')\n                  and dm.estado = 1\n                  and p.estado_planilla <> 3\n                  group by c.id_comprobante\n                , cc.numero_poliza\n                , cc.numero_certificado\n                , cc.prima_cantidad\n                , cc.estado_cargo_colectivo\n                , cc.estado_openitem\n                , cc.estado_certificado\n                , cc.id_open_item;\nSSL connection has been closed unexpectedly\n\nunable to rollback",
+        "duration_seconds": 1440.59
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": {
+      "year": 2026,
+      "month": 1
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "e28dbdbc-b887-4d05-837b-863b901c4ac2",
+    "status": "completed",
+    "started_at": "2026-02-17T16:15:07.292033",
+    "completed_at": "2026-02-17T18:00:49.244156",
+    "results": [
+      {
+        "query_id": "eaff35d8-10c2-46ac-95bb-a3b58308a33d",
+        "query_name": "Reporte Facturas No Pago",
+        "database_name": "Alloy - DBIOP - UAT",
+        "database_environment": "uat",
+        "status": "success",
+        "row_count": 1472,
+        "filename": "Reporte Facturas No Pago_Ene2026.xlsx",
+        "error": null,
+        "duration_seconds": 6340.98
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": {
+      "year": 2026,
+      "month": 1
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "5a2f7082-3089-4a82-abb3-4e4cb51f283c",
+    "status": "failed",
+    "started_at": "2026-02-17T16:14:45.823529",
+    "completed_at": "2026-02-17T16:14:47.222791",
+    "results": [
+      {
+        "query_id": "eaff35d8-10c2-46ac-95bb-a3b58308a33d",
+        "query_name": "Reporte Facturas No Pago",
+        "database_name": "Alloy - DBIOP - UAT",
+        "database_environment": "uat",
+        "status": "error",
+        "row_count": 0,
+        "filename": "",
+        "error": "connection to server at \"10.49.40.10\", port 5432 failed: FATAL:  password authentication failed for user \"ext.wilman\"\nconnection to server at \"10.49.40.10\", port 5432 failed: FATAL:  password authentication failed for user \"ext.wilman\"\n",
+        "duration_seconds": 1.38
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": {
+      "year": 2026,
+      "month": 1
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "a9cbb5b7-66d5-4e0d-96a3-1420c5c3b0b9",
+    "status": "cancelled",
+    "started_at": "2026-02-17T16:13:26.970773",
+    "completed_at": "2026-02-17T16:14:05.390346",
+    "results": [
+      {
+        "query_id": "eaff35d8-10c2-46ac-95bb-a3b58308a33d",
+        "query_name": "Reporte Facturas No Pago",
+        "database_name": "Alloy - DBIOP - UAT",
+        "database_environment": "prod",
+        "status": "cancelled",
+        "row_count": 0,
+        "filename": "",
+        "error": null,
+        "duration_seconds": 38.41
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": {
+      "year": 2026,
+      "month": 1
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "43517d46-4d55-4fcd-bf42-c9713585cb06",
+    "status": "cancelled",
+    "started_at": "2026-02-17T15:21:58.713039",
+    "completed_at": "2026-02-17T16:00:12.190114",
+    "results": [
+      {
+        "query_id": "eaff35d8-10c2-46ac-95bb-a3b58308a33d",
+        "query_name": "Reporte Facturas No Pago",
+        "database_name": "Alloy - DBIOP - UAT",
+        "database_environment": "prod",
+        "status": "cancelled",
+        "row_count": 0,
+        "filename": "",
+        "error": null,
+        "duration_seconds": 2293.42
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": {
+      "year": 2026,
+      "month": 1
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "314405c0-ac4f-41eb-8d2e-22db87010516",
+    "status": "failed",
+    "started_at": "2026-02-17T15:20:43.695582",
+    "completed_at": "2026-02-17T15:20:45.197673",
+    "results": [
+      {
+        "query_id": "eaff35d8-10c2-46ac-95bb-a3b58308a33d",
+        "query_name": "Reporte Facturas No Pago",
+        "database_name": "Alloy - DBIOP - UAT",
+        "database_environment": "prod",
+        "status": "error",
+        "row_count": 0,
+        "filename": "",
+        "error": "Execution failed on sql 'select distinct   c.id_comprobante\n  , c.serie_comprobante || '-' || c.num_comprobante documento\n  , c.num_poliza\n  , c.afecto\n  , c.no_afecto\n  , c.impuesto\n  , c.total\n  , c.total - coalesce(pa.monto_aplicado,0) saldo_inicial\n  , c.total - (coalesce(pa.monto_aplicado,0) + coalesce(pd.monto_aplicado,0)) saldo_final\n  , c.fecha_creacion\n  , c.cod_ramo\n  , c.cod_subramo\n  , c.cod_producto\n  , c.asiento\nfrom samp.detalle_movimiento dm\n  inner join samp.planilla p on dm.id_planilla = p.id_planilla\n  and p.origen_recaudacion = 19 and p.estado_planilla <> 3\n  inner join samp.comprobante c on p.id_planilla = c.id_planilla\n  left outer join pago_ant pa on c.id_comprobante = pa.id_comprobante\n  left outer join pago_durante pd on c.id_comprobante = pd.id_comprobante\n  where dm.tipo_movimiento = 1\n  and dm.tipo_detalle = 16\n  and dm.estado = 1\n  and c.cod_estado <> 3\n  and p.fecha_creacion < to_date('01/02/2026','dd/mm/yyyy')\nand c.asiento is not null\n  order by c.id_comprobante asc;': relation \"pago_ant\" does not exist\nLINE 19:   left outer join pago_ant pa on c.id_comprobante = pa.id_co...\n                           ^\n",
+        "duration_seconds": 1.47
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": {
+      "year": 2026,
+      "month": 1
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "d1ab4de4-482c-41df-be0a-f1271f16248f",
+    "status": "interrupted",
+    "started_at": "2026-02-17T15:18:40.852459",
+    "completed_at": "2026-02-17T15:18:44.117878",
+    "results": [
+      {
+        "query_id": "eaff35d8-10c2-46ac-95bb-a3b58308a33d",
+        "query_name": "Reporte Facturas No Pago",
+        "database_name": "Alloy - DBIOP - UAT",
+        "database_environment": "prod",
+        "status": "error",
+        "row_count": 0,
+        "filename": "",
+        "error": "Execution failed on sql 'select distinct   c.id_comprobante\n  , c.serie_comprobante || '-' || c.num_comprobante documento\n  , c.num_poliza\n  , c.afecto\n  , c.no_afecto\n  , c.impuesto\n  , c.total\n  , c.total - coalesce(pa.monto_aplicado,0) saldo_inicial\n  , c.total - (coalesce(pa.monto_aplicado,0) + coalesce(pd.monto_aplicado,0)) saldo_final\n  , c.fecha_creacion\n  , c.cod_ramo\n  , c.cod_subramo\n  , c.cod_producto\n  , c.asiento\nfrom samp.detalle_movimiento dm\n  inner join samp.planilla p on dm.id_planilla = p.id_planilla\n  and p.origen_recaudacion = 19 and p.estado_planilla <> 3\n  inner join samp.comprobante c on p.id_planilla = c.id_planilla\n  left outer join pago_ant pa on c.id_comprobante = pa.id_comprobante\n  left outer join pago_durante pd on c.id_comprobante = pd.id_comprobante\n  where dm.tipo_movimiento = 1\n  and dm.tipo_detalle = 16\n  and dm.estado = 1\n  and c.cod_estado <> 3\n  and p.fecha_creacion < to_date('01/02/2026','dd/mm/yyyy')\nand c.asiento is not null\n  order by c.id_comprobante asc;': relation \"pago_ant\" does not exist\nLINE 19:   left outer join pago_ant pa on c.id_comprobante = pa.id_co...\n                           ^\n",
+        "duration_seconds": 1.65
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": {
+      "year": 2026,
+      "month": 1
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "783b1c7a-0868-4a01-b1a7-d2bcc0556d11",
+    "status": "completed",
+    "started_at": "2026-02-17T11:55:22.591477",
+    "completed_at": "2026-02-17T11:55:30.386302",
+    "results": [
+      {
+        "query_id": "0a98a72a-af47-4e63-80a5-b3e817e1b0d2",
+        "query_name": "2 ReporteReciboCaja SoloPT360",
+        "database_name": "Alloy - DBIOP - UAT",
+        "status": "success",
+        "row_count": 3938,
+        "filename": "2 ReporteReciboCaja SoloPT360_20260217_115528.xlsx",
+        "error": null,
+        "duration_seconds": 5.74
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": {
+      "year": 2026,
+      "month": 1
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "55f6bb51-a515-4709-880c-401401dbccad",
+    "status": "completed",
+    "started_at": "2026-02-17T11:22:30.710769",
+    "completed_at": "2026-02-17T11:24:05.629270",
+    "results": [
+      {
+        "query_id": "c4dbc8d8-7804-4f95-ba2a-f51bd0146389",
+        "query_name": "Reporte Históricos Tarjetas",
+        "database_name": "Alloy - DBIOP - UAT",
+        "status": "success",
+        "row_count": 85473,
+        "filename": "Reporte Históricos Tarjetas_20260217_112344.xlsx",
+        "error": null,
+        "duration_seconds": 73.81
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1,
+    "period": null,
+    "use_dynamic_dates": false
+  },
+  {
+    "id": "da8781ea-4bbe-4955-a67c-49acefadcaef",
+    "status": "completed",
+    "started_at": "2026-02-17T11:09:19.309617",
+    "completed_at": "2026-02-17T11:11:24.740796",
+    "results": [
+      {
+        "query_id": "e1cbf3de-7fde-4427-9ef6-804070e97f50",
+        "query_name": "Reporte Históricos Tarjetas",
+        "database_name": "Alloy - DBIOP - UAT",
+        "status": "success",
+        "row_count": 85473,
+        "filename": "Reporte Históricos Tarjetas_20260217_111102.xlsx",
+        "error": null,
+        "duration_seconds": 102.85
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1
+  },
+  {
+    "id": "bac83ffe-a723-44ef-a6c6-8270cbae0ea0",
+    "status": "completed",
+    "started_at": "2026-02-16T12:29:49.460876",
+    "completed_at": "2026-02-16T12:32:46.361427",
+    "results": [
+      {
+        "query_id": "0a98a72a-af47-4e63-80a5-b3e817e1b0d2",
+        "query_name": "2 ReporteReciboCaja SoloPT360",
+        "database_name": "Alloy - DBIOP - UAT",
+        "status": "success",
+        "row_count": 3938,
+        "filename": "2 ReporteReciboCaja SoloPT360_20260216_122958.xlsx",
+        "error": null,
+        "duration_seconds": 8.5
+      },
+      {
+        "query_id": "e1cbf3de-7fde-4427-9ef6-804070e97f50",
+        "query_name": "Reporte Históricos Tarjetas",
+        "database_name": "Alloy - DBIOP - UAT",
+        "status": "success",
+        "row_count": 89612,
+        "filename": "Reporte Históricos Tarjetas_20260216_123041.xlsx",
+        "error": null,
+        "duration_seconds": 52.44
+      },
+      {
+        "query_id": "c03474ff-39b2-4ba0-99a6-5cc5077826d2",
+        "query_name": "Reporte FTP",
+        "database_name": "Alloy - DBIOP - UAT",
+        "status": "success",
+        "row_count": 494538,
+        "filename": "Reporte FTP_20260216_123118.xlsx",
+        "error": null,
+        "duration_seconds": 88.8
+      }
+    ],
+    "total_queries": 3,
+    "completed_queries": 3
+  },
+  {
+    "id": "269786ca-4aac-4d00-bcaa-a69bfe7ce5e2",
+    "status": "interrupted",
+    "started_at": "2026-02-16T11:11:43.424695",
+    "completed_at": "2026-02-16T11:51:37.509981",
+    "results": [
+      {
+        "query_id": "44ec860a-86b0-46df-9df0-0253c7795872",
+        "query_name": "1 ReporteReciboCaja SinPT360",
+        "database_name": "Alloy - DBIOP - UAT",
+        "status": "success",
+        "row_count": 3022,
+        "filename": "1 ReporteReciboCaja SinPT360_20260216_114052.xlsx",
+        "error": null,
+        "duration_seconds": 1749.18
+      },
+      {
+        "query_id": "4fdd3a82-c9ec-4a4f-bdb9-f6879a3d1112",
+        "query_name": "2 ReporteReciboCaja SoloPT360",
+        "database_name": "Alloy - DBIOP - UAT",
+        "status": "success",
+        "row_count": 3938,
+        "filename": "2 ReporteReciboCaja SoloPT360_20260216_114057.xlsx",
+        "error": null,
+        "duration_seconds": 3.4
+      },
+      {
+        "query_id": "94fffcbb-542f-45c5-92b0-07524dd6c139",
+        "query_name": "Reporte Históricos Tarjetas",
+        "database_name": "Alloy - DBIOP - UAT",
+        "status": "success",
+        "row_count": 84480,
+        "filename": "Reporte Históricos Tarjetas_20260216_114253.xlsx",
+        "error": null,
+        "duration_seconds": 116.49
+      },
+      {
+        "query_id": "110b7b7a-6de6-406e-b1e5-5c05bb626c07",
+        "query_name": "Reporte FTP",
+        "database_name": "Alloy - DBIOP - UAT",
+        "status": "success",
+        "row_count": 494538,
+        "filename": "Reporte FTP_20260216_114610.xlsx",
+        "error": null,
+        "duration_seconds": 173.96
+      },
+      {
+        "query_id": "4cff7bf2-e30e-4b64-8dd2-4638ec13e3fa",
+        "query_name": "Reporte Facturas No Pago",
+        "database_name": "Alloy - DBIOP - UAT",
+        "status": "interrupted",
+        "row_count": 0,
+        "filename": "",
+        "error": null,
+        "duration_seconds": 0.0
+      }
+    ],
+    "total_queries": 5,
+    "completed_queries": 4
+  },
+  {
+    "id": "02469a14-2b34-4b95-9f66-be61108fe935",
+    "status": "completed",
+    "started_at": "2026-02-16T09:09:56.328044",
+    "completed_at": "2026-02-16T10:55:18.887309",
+    "results": [
+      {
+        "query_id": "4cff7bf2-e30e-4b64-8dd2-4638ec13e3fa",
+        "query_name": "Reporte Facturas No Pago",
+        "database_name": "Alloy - DBIOP - UAT",
+        "status": "success",
+        "row_count": 13266,
+        "filename": "Reporte Facturas No Pago_20260216_105517.xlsx",
+        "error": null,
+        "duration_seconds": 6320.76
+      }
+    ],
+    "total_queries": 1,
+    "completed_queries": 1
+  }
+]

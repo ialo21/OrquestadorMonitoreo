@@ -52,6 +52,7 @@ export default function ConfigPanel() {
     end_email_cc: [],
     end_email_subject: 'Finalización de Ejecución de Reportes',
     end_email_body: '',
+    drive_folder_level: -1,
   })
   const [emailSaving, setEmailSaving] = useState(false)
   const [emailTesting, setEmailTesting] = useState(false)
@@ -597,8 +598,29 @@ GOOGLE_OAUTH_PROJECT_ID=tu_project_id`}
                         <div>• {`{{TOTAL_QUERIES}}`} - Número total de queries</div>
                         <div>• {`{{QUERIES_COMPLETADAS}}`} - Queries completadas</div>
                         <div>• {`{{ESTADO}}`} - Estado final de la ejecución</div>
+                        <div>• {`{{CARPETA_DRIVE}}`} - URL de carpeta Drive (configurable abajo)</div>
                       </div>
                     </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Nivel de carpeta Drive para {`{{CARPETA_DRIVE}}`}
+                    </label>
+                    <select
+                      value={emailConfig.drive_folder_level}
+                      onChange={(e) => setEmailConfig({ ...emailConfig, drive_folder_level: parseInt(e.target.value) })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    >
+                      <option value="-1">Última carpeta (donde se sube el archivo)</option>
+                      <option value="0">Primera carpeta de la estructura</option>
+                      <option value="1">Segunda carpeta</option>
+                      <option value="2">Tercera carpeta</option>
+                      <option value="3">Cuarta carpeta</option>
+                    </select>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Selecciona qué nivel de la estructura de carpetas de Drive incluir en emails con la variable {`{{CARPETA_DRIVE}}`}
+                    </p>
                   </div>
                 </div>
               )}

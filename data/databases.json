@@ -1,13 +1,14 @@
 [
   {
-    "name": "Alloy - DBIOP - UAT",
+    "name": "DBIOP - Devinc",
     "db_type": "postgresql",
     "host": "10.49.40.10",
     "port": 5432,
     "database": "dbiopinc",
-    "description": "Base de datos PostgreSQL UAT (Alloy)",
+    "description": "Base de datos PostgreSQL Devinc (Alloy)",
     "id": "alloy-dbiop",
-    "auth_type": "sql"
+    "auth_type": "sql",
+    "environment": "uat"
   },
   {
     "name": "SQL Server - Interseg",
@@ -19,5 +20,16 @@
     "id": "sqlserver-interseg",
     "auth_type": "windows",
     "environment": "prod"
+  },
+  {
+    "name": "DBIOP",
+    "db_type": "postgresql",
+    "host": "10.49.40.16",
+    "port": 5432,
+    "database": "DBIOP",
+    "description": "AlloyDB",
+    "auth_type": "sql",
+    "environment": "prod",
+    "id": "b6e4767c-9d51-4b77-91a2-4e7112e82ae6"
   }
 ]

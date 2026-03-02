@@ -70,6 +70,8 @@ def _replace_variables(
     execution_status: str = "",
     total_queries: int = 0,
     completed_queries: int = 0,
+    drive_folder_urls: Optional[list[str]] = None,
+    drive_folder_level: int = -1,
 ) -> str:
     """
     Reemplaza variables en una plantilla de email.
@@ -81,6 +83,7 @@ def _replace_variables(
     - {{TOTAL_QUERIES}}: Número total de queries
     - {{QUERIES_COMPLETADAS}}: Número de queries completadas
     - {{ESTADO}}: Estado de la ejecución
+    - {{CARPETA_DRIVE}}: URL de la carpeta Drive según configuración
     """
     result = template
     
@@ -108,6 +111,18 @@ def _replace_variables(
     result = result.replace("{{TOTAL_QUERIES}}", str(total_queries))
     result = result.replace("{{QUERIES_COMPLETADAS}}", str(completed_queries))
     result = result.replace("{{ESTADO}}", execution_status)
+    
+    # Carpeta Drive
+    if drive_folder_urls and len(drive_folder_urls) > 0:
+        try:
+            # Usar el nivel configurado (soporta índices negativos)
+            folder_url = drive_folder_urls[drive_folder_level]
+        except (IndexError, TypeError):
+            # Si el índice no es válido, usar la última carpeta
+            folder_url = drive_folder_urls[-1] if drive_folder_urls else "N/A"
+    else:
+        folder_url = "N/A"
+    result = result.replace("{{CARPETA_DRIVE}}", folder_url)
     
     return result
 
@@ -213,6 +228,7 @@ def send_end_email(
     total_queries: int,
     completed_queries: int,
     period: Optional[PeriodInput] = None,
+    drive_folder_urls: Optional[list[str]] = None,
 ) -> tuple[bool, str]:
     """Envía el email de fin de ejecución."""
     if not config.enabled or not config.send_end_email:
@@ -227,6 +243,8 @@ def send_end_email(
         execution_status=execution_status,
         total_queries=total_queries,
         completed_queries=completed_queries,
+        drive_folder_urls=drive_folder_urls,
+        drive_folder_level=config.drive_folder_level,
     )
     
     body = _replace_variables(
@@ -237,6 +255,8 @@ def send_end_email(
         execution_status=execution_status,
         total_queries=total_queries,
         completed_queries=completed_queries,
+        drive_folder_urls=drive_folder_urls,
+        drive_folder_level=config.drive_folder_level,
     )
     
     try:

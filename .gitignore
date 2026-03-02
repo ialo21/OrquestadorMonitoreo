@@ -2,13 +2,6 @@
 node_modules
 **/node_modules
 
-# Resultados y datos generados
-backend/data/databases.json
-backend/data/queries.json
-backend/data/executions.json
-backend/data/results/
-backend/data/gmail_token.pickle
-backend/data/drive_token.pickle
 *.xlsx
 *.csv
 
@@ -16,6 +9,10 @@ backend/data/drive_token.pickle
 .env
 .env.local
 .env.*.local
+
+# Configuraciones con credenciales OAuth
+data/drive_config.json
+data/email_config.json
 
 # Logs y caché
 *.log
