@@ -17,11 +17,7 @@ backend/data/drive_config.json
 backend/data/email_config.json
 backend/data/drive_token.pickle
 backend/data/gmail_token.pickle
-backend/data/databases.json
-backend/data/queries.json
-backend/data/executions.json
-backend/data/queries_sql/
-backend/data/results/
+
 
 # Logs y caché
 *.log
