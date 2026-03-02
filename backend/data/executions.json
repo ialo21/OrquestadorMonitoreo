@@ -1,5 +1,209 @@
 [
   {
+    "id": "8c7bdcf7-2180-4e84-9884-923e7e3d9ecf",
+    "status": "completed",
+    "started_at": "2026-03-02T12:01:04.912703",
+    "completed_at": "2026-03-02T12:01:17.574241",
+    "results": [
+      {
+        "query_id": "7befc99a-2682-45dd-a252-94b82915433f",
+        "query_name": "Reporte Resumen Registro Ventas",
+        "database_name": "SQL Server - Interseg",
+        "database_environment": "prod",
+        "status": "success",
+        "row_count": 0,
+        "filename": "Reporte Resumen Registro Ventas_Feb2026.xlsx",
+        "error": null,
+        "duration_seconds": 1.9,
+        "started_at": "2026-03-02T12:01:05.989700",
+        "completed_at": "2026-03-02T12:01:17.283237",
+        "drive_folder_url": "https://drive.google.com/drive/folders/1xQa_piMDf3Cg7NvBkQuDFRjo_juMFxMx",
+        "drive_folder_urls": [
+          "https://drive.google.com/drive/folders/1DevB3pGFoCVgxIka1zLITC-Pp5X0ozJw",
+          "https://drive.google.com/drive/folders/1xQa_piMDf3Cg7NvBkQuDFRjo_juMFxMx"
+        ]
+      },
+      {
+        "query_id": "579e468b-727c-48fe-9ff4-bbb98e873533",
+        "query_name": "2 ReporteReciboCaja SoloPT360",
+        "database_name": "DBIOP",
+        "database_environment": "prod",
+        "status": "success",
+        "row_count": 4848,
+        "filename": "2 ReporteReciboCaja SoloPT360_Feb2026.xlsx",
+        "error": null,
+        "duration_seconds": 2.01,
+        "started_at": "2026-03-02T12:01:05.993215",
+        "completed_at": "2026-03-02T12:01:12.612334",
+        "drive_folder_url": "https://drive.google.com/drive/folders/1xQa_piMDf3Cg7NvBkQuDFRjo_juMFxMx",
+        "drive_folder_urls": [
+          "https://drive.google.com/drive/folders/1DevB3pGFoCVgxIka1zLITC-Pp5X0ozJw",
+          "https://drive.google.com/drive/folders/1xQa_piMDf3Cg7NvBkQuDFRjo_juMFxMx"
+        ]
+      }
+    ],
+    "total_queries": 2,
+    "completed_queries": 2,
+    "period": {
+      "year": 2026,
+      "month": 2
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "d7dbab58-9896-41e3-9e2a-35fe7f839484",
+    "status": "completed",
+    "started_at": "2026-03-02T11:55:34.352194",
+    "completed_at": "2026-03-02T11:55:41.201590",
+    "results": [
+      {
+        "query_id": "7befc99a-2682-45dd-a252-94b82915433f",
+        "query_name": "Reporte Resumen Registro Ventas",
+        "database_name": "SQL Server - Interseg",
+        "database_environment": "prod",
+        "status": "success",
+        "row_count": 0,
+        "filename": "Reporte Resumen Registro Ventas_Feb2026.xlsx",
+        "error": null,
+        "duration_seconds": 1.16,
+        "started_at": "2026-03-02T11:55:35.337164",
+        "completed_at": "2026-03-02T11:55:39.463709",
+        "drive_folder_url": "https://drive.google.com/drive/folders/1xQa_piMDf3Cg7NvBkQuDFRjo_juMFxMx",
+        "drive_folder_urls": [
+          "https://drive.google.com/drive/folders/1DevB3pGFoCVgxIka1zLITC-Pp5X0ozJw",
+          "https://drive.google.com/drive/folders/1xQa_piMDf3Cg7NvBkQuDFRjo_juMFxMx"
+        ]
+      },
+      {
+        "query_id": "579e468b-727c-48fe-9ff4-bbb98e873533",
+        "query_name": "2 ReporteReciboCaja SoloPT360",
+        "database_name": "DBIOP",
+        "database_environment": "prod",
+        "status": "success",
+        "row_count": 4848,
+        "filename": "2 ReporteReciboCaja SoloPT360_Feb2026.xlsx",
+        "error": null,
+        "duration_seconds": 1.97,
+        "started_at": "2026-03-02T11:55:35.343440",
+        "completed_at": "2026-03-02T11:55:41.197903",
+        "drive_folder_url": "https://drive.google.com/drive/folders/1xQa_piMDf3Cg7NvBkQuDFRjo_juMFxMx",
+        "drive_folder_urls": [
+          "https://drive.google.com/drive/folders/1DevB3pGFoCVgxIka1zLITC-Pp5X0ozJw",
+          "https://drive.google.com/drive/folders/1xQa_piMDf3Cg7NvBkQuDFRjo_juMFxMx"
+        ]
+      }
+    ],
+    "total_queries": 2,
+    "completed_queries": 2,
+    "period": {
+      "year": 2026,
+      "month": 2
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "57a644df-b565-4a18-9202-21de6601523a",
+    "status": "completed",
+    "started_at": "2026-03-02T11:53:43.663681",
+    "completed_at": "2026-03-02T11:53:50.262507",
+    "results": [
+      {
+        "query_id": "7befc99a-2682-45dd-a252-94b82915433f",
+        "query_name": "Reporte Resumen Registro Ventas",
+        "database_name": "SQL Server - Interseg",
+        "database_environment": "prod",
+        "status": "success",
+        "row_count": 0,
+        "filename": "Reporte Resumen Registro Ventas_Feb2026.xlsx",
+        "error": null,
+        "duration_seconds": 1.18,
+        "started_at": "2026-03-02T11:53:44.598544",
+        "completed_at": "2026-03-02T11:53:49.801434",
+        "drive_folder_url": "https://drive.google.com/drive/folders/1xQa_piMDf3Cg7NvBkQuDFRjo_juMFxMx",
+        "drive_folder_urls": [
+          "https://drive.google.com/drive/folders/1DevB3pGFoCVgxIka1zLITC-Pp5X0ozJw",
+          "https://drive.google.com/drive/folders/1xQa_piMDf3Cg7NvBkQuDFRjo_juMFxMx"
+        ]
+      },
+      {
+        "query_id": "579e468b-727c-48fe-9ff4-bbb98e873533",
+        "query_name": "2 ReporteReciboCaja SoloPT360",
+        "database_name": "DBIOP",
+        "database_environment": "prod",
+        "status": "success",
+        "row_count": 4848,
+        "filename": "2 ReporteReciboCaja SoloPT360_Feb2026.xlsx",
+        "error": null,
+        "duration_seconds": 2.0,
+        "started_at": "2026-03-02T11:53:44.604710",
+        "completed_at": "2026-03-02T11:53:50.255972",
+        "drive_folder_url": "https://drive.google.com/drive/folders/1xQa_piMDf3Cg7NvBkQuDFRjo_juMFxMx",
+        "drive_folder_urls": [
+          "https://drive.google.com/drive/folders/1DevB3pGFoCVgxIka1zLITC-Pp5X0ozJw",
+          "https://drive.google.com/drive/folders/1xQa_piMDf3Cg7NvBkQuDFRjo_juMFxMx"
+        ]
+      }
+    ],
+    "total_queries": 2,
+    "completed_queries": 2,
+    "period": {
+      "year": 2026,
+      "month": 2
+    },
+    "use_dynamic_dates": true
+  },
+  {
+    "id": "5c3bb693-68f1-4461-a9c7-3b67d8cb3fa1",
+    "status": "completed",
+    "started_at": "2026-03-02T11:51:22.774033",
+    "completed_at": "2026-03-02T11:51:31.278609",
+    "results": [
+      {
+        "query_id": "7befc99a-2682-45dd-a252-94b82915433f",
+        "query_name": "Reporte Resumen Registro Ventas",
+        "database_name": "SQL Server - Interseg",
+        "database_environment": "prod",
+        "status": "success",
+        "row_count": 0,
+        "filename": "Reporte Resumen Registro Ventas_Feb2026.xlsx",
+        "error": null,
+        "duration_seconds": 1.95,
+        "started_at": "2026-03-02T11:51:23.744320",
+        "completed_at": "2026-03-02T11:51:30.995791",
+        "drive_folder_url": "https://drive.google.com/drive/folders/14eZjofuB4mvSYFJ5ZCnoe8KNnZAhviv1",
+        "drive_folder_urls": [
+          "https://drive.google.com/drive/folders/1DevB3pGFoCVgxIka1zLITC-Pp5X0ozJw",
+          "https://drive.google.com/drive/folders/14eZjofuB4mvSYFJ5ZCnoe8KNnZAhviv1"
+        ]
+      },
+      {
+        "query_id": "579e468b-727c-48fe-9ff4-bbb98e873533",
+        "query_name": "2 ReporteReciboCaja SoloPT360",
+        "database_name": "DBIOP",
+        "database_environment": "prod",
+        "status": "success",
+        "row_count": 4848,
+        "filename": "2 ReporteReciboCaja SoloPT360_Feb2026.xlsx",
+        "error": null,
+        "duration_seconds": 2.09,
+        "started_at": "2026-03-02T11:51:23.736612",
+        "completed_at": "2026-03-02T11:51:31.206865",
+        "drive_folder_url": "https://drive.google.com/drive/folders/1TTzT5doxLyN_UnwM-I-9dvaJJzxfgOUs",
+        "drive_folder_urls": [
+          "https://drive.google.com/drive/folders/1DevB3pGFoCVgxIka1zLITC-Pp5X0ozJw",
+          "https://drive.google.com/drive/folders/1TTzT5doxLyN_UnwM-I-9dvaJJzxfgOUs"
+        ]
+      }
+    ],
+    "total_queries": 2,
+    "completed_queries": 2,
+    "period": {
+      "year": 2026,
+      "month": 2
+    },
+    "use_dynamic_dates": true
+  },
+  {
     "id": "b6eb32af-6aac-40ba-a326-614e8853e168",
     "status": "completed",
     "started_at": "2026-03-02T11:09:50.890680",

@@ -10,6 +10,60 @@ from models import DriveConfig, PeriodInput
 TOKEN_PATH = Path(__file__).parent / "data" / "drive_token.pickle"
 
 
+def _get_drive_service(config: DriveConfig):
+    """
+    Obtiene un servicio de Google Drive autenticado.
+    
+    Args:
+        config: Configuración de Google Drive
+        
+    Returns:
+        Servicio de Google Drive autenticado
+        
+    Raises:
+        Exception: Si no se puede autenticar o falta configuración
+    """
+    try:
+        from google.oauth2.credentials import Credentials
+        from google_auth_oauthlib.flow import InstalledAppFlow
+        from google.auth.transport.requests import Request
+        from googleapiclient.discovery import build
+    except ImportError:
+        raise Exception("Librerías de Google Drive no instaladas. Ejecuta: pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib")
+    
+    if not config.oauth_credentials.get("installed", {}).get("client_id"):
+        raise Exception("Credenciales OAuth de Google no configuradas. Configúralas en el archivo .env o en la interfaz.")
+    
+    SCOPES = ['https://www.googleapis.com/auth/drive.file']
+    
+    creds = None
+    
+    # Cargar token guardado si existe
+    if TOKEN_PATH.exists():
+        with open(TOKEN_PATH, 'rb') as token:
+            creds = pickle.load(token)
+    
+    # Si no hay credenciales válidas, obtener nuevas
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            # Flujo OAuth usando credenciales del config
+            flow = InstalledAppFlow.from_client_config(
+                config.oauth_credentials,
+                SCOPES
+            )
+            creds = flow.run_local_server(port=0)
+        
+        # Guardar credenciales para la próxima vez
+        TOKEN_PATH.parent.mkdir(parents=True, exist_ok=True)
+        with open(TOKEN_PATH, 'wb') as token:
+            pickle.dump(creds, token)
+    
+    # Construir y retornar servicio
+    return build('drive', 'v3', credentials=creds)
+
+
 def _get_or_create_folder(service, folder_name: str, parent_id: str) -> tuple[str, str]:
     """
     Busca una carpeta por nombre dentro de un padre.
@@ -92,6 +146,79 @@ def run_drive_authorization(config: DriveConfig) -> tuple[bool, str]:
         return False, f"Error durante la autorización de Drive: {str(e)}"
 
 
+def _get_unique_filename(service, base_filename: str, parent_id: str) -> str:
+    """
+    Genera un nombre único para un archivo si ya existe en la carpeta.
+    Si el archivo existe, agrega un sufijo (1), (2), etc.
+    
+    Args:
+        service: Servicio de Google Drive autenticado
+        base_filename: Nombre base del archivo (ej: "reporte.xlsx")
+        parent_id: ID de la carpeta padre
+    
+    Returns:
+        str: Nombre único del archivo
+    """
+    try:
+        # Separar nombre y extensión
+        if '.' in base_filename:
+            name_parts = base_filename.rsplit('.', 1)
+            name_without_ext = name_parts[0]
+            extension = '.' + name_parts[1]
+        else:
+            name_without_ext = base_filename
+            extension = ''
+        
+        # Buscar archivos con el mismo nombre en la carpeta
+        query = f"name='{base_filename}' and '{parent_id}' in parents and trashed=false"
+        results = service.files().list(
+            q=query,
+            spaces='drive',
+            fields='files(id, name)',
+            pageSize=1,
+            includeItemsFromAllDrives=True,
+            supportsAllDrives=True,
+        ).execute()
+        
+        items = results.get('files', [])
+        
+        # Si no existe, retornar el nombre original
+        if not items:
+            print(f"[DRIVE DEBUG] Archivo '{base_filename}' no existe, usando nombre original")
+            return base_filename
+        
+        # Si existe, buscar el siguiente número disponible
+        print(f"[DRIVE DEBUG] Archivo '{base_filename}' ya existe, buscando nombre único...")
+        counter = 1
+        while True:
+            new_name = f"{name_without_ext} ({counter}){extension}"
+            query = f"name='{new_name}' and '{parent_id}' in parents and trashed=false"
+            results = service.files().list(
+                q=query,
+                spaces='drive',
+                fields='files(id, name)',
+                pageSize=1,
+                includeItemsFromAllDrives=True,
+                supportsAllDrives=True,
+            ).execute()
+            
+            items = results.get('files', [])
+            if not items:
+                print(f"[DRIVE DEBUG] Nombre único encontrado: '{new_name}'")
+                return new_name
+            
+            counter += 1
+            
+            # Límite de seguridad para evitar bucles infinitos
+            if counter > 1000:
+                raise Exception("No se pudo encontrar un nombre único después de 1000 intentos")
+                
+    except Exception as e:
+        print(f"[DRIVE ERROR] Error al buscar nombre único: {e}")
+        # En caso de error, retornar el nombre original
+        return base_filename
+
+
 def share_folder_with_emails(
     service,
     folder_id: str,
@@ -168,10 +295,6 @@ def upload_to_drive(
         return False, f"Archivo no encontrado: {file_path}"
     
     try:
-        from google.oauth2.credentials import Credentials
-        from google_auth_oauthlib.flow import InstalledAppFlow
-        from google.auth.transport.requests import Request
-        from googleapiclient.discovery import build
         from googleapiclient.http import MediaFileUpload
     except ImportError:
         return False, "Librerías de Google Drive no instaladas. Ejecuta: pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib"
@@ -179,37 +302,9 @@ def upload_to_drive(
     if not config.oauth_credentials.get("installed", {}).get("client_id"):
         return False, "Credenciales OAuth de Google no configuradas. Configúralas en el archivo .env o en la interfaz."
     
-    SCOPES = ['https://www.googleapis.com/auth/drive.file']
-    
     try:
-        # Autenticación usando OAuth (igual que email_service)
-        creds = None
-        token_path = Path(__file__).parent / 'data' / 'drive_token.pickle'
-        
-        # Cargar token guardado si existe
-        if token_path.exists():
-            with open(token_path, 'rb') as token:
-                creds = pickle.load(token)
-        
-        # Si no hay credenciales válidas, obtener nuevas
-        if not creds or not creds.valid:
-            if creds and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
-            else:
-                # Flujo OAuth usando credenciales del config
-                flow = InstalledAppFlow.from_client_config(
-                    config.oauth_credentials,
-                    SCOPES
-                )
-                creds = flow.run_local_server(port=0)
-            
-            # Guardar credenciales para la próxima vez
-            token_path.parent.mkdir(parents=True, exist_ok=True)
-            with open(token_path, 'wb') as token:
-                pickle.dump(creds, token)
-        
-        # Construir servicio
-        service = build('drive', 'v3', credentials=creds)
+        # Obtener servicio autenticado usando la función auxiliar
+        service = _get_drive_service(config)
         
         # Preparar variables para reemplazo en estructura de carpetas
         meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
@@ -251,9 +346,12 @@ def upload_to_drive(
         # La última carpeta creada es donde se sube el archivo
         query_folder_id = current_parent_id
         
-        # Subir archivo
+        # Obtener un nombre único para el archivo si ya existe
+        unique_filename = _get_unique_filename(service, file_path.name, query_folder_id)
+        
+        # Subir archivo con el nombre único
         file_metadata = {
-            'name': file_path.name,
+            'name': unique_filename,
             'parents': [query_folder_id]
         }
         
